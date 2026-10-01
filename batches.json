@@ -1,0 +1,16 @@
+{
+  "success": true,
+  "batches": [
+    {
+      "_id": "periodic-table",
+      "name": "3D Periodic Table",
+      "byName": "Interactive 3D atoms, 118 elements, works offline",
+      "language": "Interactive",
+      "previewImage": "assets/periodic-table-thumb.svg",
+      "type": "TOOL",
+      "slug": "periodic-table",
+      "href": "periodic-table.html",
+      "subBatches": []
+    }
+  ]
+}

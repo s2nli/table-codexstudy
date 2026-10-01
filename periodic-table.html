@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CodexStudys – 3D Periodic Table</title>
+<style>
+:root{--bg:#eef1f8;--bg2:#dfe5f5;--tx:#141a2e;--mu:#5b6482;--gl:rgba(255,255,255,.65);--bd:rgba(20,26,46,.14);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#070a16;--bg2:#141a3a;--tx:#eef1ff;--mu:#97a1c7;--gl:rgba(255,255,255,.06);--bd:rgba(255,255,255,.14)}}
+:root[data-theme="dark"]{--bg:#070a16;--bg2:#141a3a;--tx:#eef1ff;--mu:#97a1c7;--gl:rgba(255,255,255,.06);--bd:rgba(255,255,255,.14)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;color:var(--tx);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:radial-gradient(1200px 700px at 20% -10%,var(--bg2),var(--bg))fixed}
+header{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;padding:14px 18px}
+h1{margin:0;font-size:1.25rem;letter-spacing:.5px}h1 small{display:block;font-size:.7rem;color:var(--mu);font-weight:400}
+.g{background:var(--gl);border:1px solid var(--bd);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-radius:14px}
+.bar{display:flex;gap:8px;align-items:center}
+button,input{font:inherit;color:inherit}
+.ib{width:38px;height:38px;border-radius:10px;cursor:pointer;font-size:1rem}
+input[type=search]{padding:9px 14px;border-radius:12px;width:min(260px,60vw);outline:none}
+.ctl{margin:0 18px 10px;padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+.row{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.chip{padding:5px 11px;border-radius:99px;font-size:.75rem;cursor:pointer;border:1px solid var(--bd);background:transparent;display:flex;gap:6px;align-items:center;transition:.2s}
+.chip i{width:9px;height:9px;border-radius:50%;background:var(--c)}
+.chip.on{background:var(--c,#6c7bff);color:#fff;border-color:transparent;box-shadow:0 0 14px var(--c,#6c7bff)}
+.temp{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:.8rem}
+.temp input{flex:1;min-width:160px;accent-color:#6c7bff}
+#tv{min-width:92px;font-weight:600}
+.wrap{overflow-x:auto;padding:4px 18px 30px}
+#grid{display:grid;grid-template-columns:repeat(18,minmax(54px,1fr));grid-template-rows:repeat(7,auto) 16px auto auto;gap:4px;min-width:1000px}
+.t{--c:#888;position:relative;border-radius:8px;padding:3px 4px;text-align:center;cursor:pointer;min-height:64px;display:flex;flex-direction:column;justify-content:center;
+background:color-mix(in srgb,var(--c) 22%,transparent);border:1px solid color-mix(in srgb,var(--c) 60%,transparent);transition:transform .18s,box-shadow .18s,opacity .25s;color:var(--tx)}
+.t:hover{transform:translateY(-3px) scale(1.12);z-index:3;box-shadow:0 0 20px var(--c)}
+.t.dim{opacity:.12;pointer-events:none}
+.t b{font-size:1.05rem;line-height:1.1}.t .n{position:absolute;top:2px;left:4px;font-size:.58rem;color:var(--mu)}
+.t span{font-size:.54rem;color:var(--mu);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.t .p{position:absolute;top:3px;right:4px;width:6px;height:6px;border-radius:50%}
+.s0{background:#9aa4c7}.s1{background:#4dabf7;box-shadow:0 0 6px #4dabf7}.s2{background:#ff922b;box-shadow:0 0 6px #ff922b;animation:pl 1.4s infinite}.s3{background:transparent;border:1px dashed var(--mu)}
+@keyframes pl{50%{opacity:.4}}
+.ph{border-radius:8px;border:1px dashed var(--bd);font-size:.65rem;color:var(--mu);display:flex;align-items:center;justify-content:center}
+#ov{position:fixed;inset:0;background:rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:.3s;z-index:9}
+#dr{position:fixed;top:0;right:0;bottom:0;width:min(460px,100%);z-index:10;transform:translateX(105%);transition:transform .35s cubic-bezier(.2,.8,.2,1);overflow-y:auto;border-radius:20px 0 0 20px;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px);background:var(--bg)}
+body.open #dr{transform:none}body.open #ov{opacity:1;pointer-events:auto}
+#cb{height:270px;position:relative;background:radial-gradient(circle,var(--bg2),var(--bg))}
+#cv{width:100%;height:100%;display:block;touch-action:none;cursor:grab}
+#cb small{position:absolute;bottom:6px;left:10px;font-size:.65rem;color:var(--mu)}
+#x{position:absolute;top:10px;right:10px;z-index:2}
+.hd{padding:12px 18px;display:flex;gap:14px;align-items:center}
+.big{font-size:2.6rem;font-weight:800;color:var(--c)}
+.hd h2{margin:0;font-size:1.3rem}.hd p{margin:0;color:var(--mu);font-size:.8rem}
+.sec{margin:0 14px 12px;padding:10px 14px}.sec h3{margin:0 0 6px;font-size:.7rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--mu)}
+.kv{display:flex;justify-content:space-between;padding:4px 0;font-size:.85rem;border-bottom:1px solid var(--bd)}.kv:last-child{border:0}.kv span:first-child{color:var(--mu)}.kv span:last-child{text-align:right;max-width:62%}
+.hz{display:flex;gap:8px;flex-wrap:wrap}.hz div{padding:6px 10px;border-radius:10px;font-size:.78rem;border:1px solid var(--bd);opacity:.3}.hz .a{opacity:1;border-color:#ff6b6b;box-shadow:0 0 10px rgba(255,107,107,.4)}
+</style></head><body>
+<header>
+<a href="index.html" class="g ib" style="display:grid;place-items:center;text-decoration:none;color:inherit" title="Home">←</a>
+<h1>⚛ CodexStudys<small>Interactive 3D Periodic Table · works offline</small></h1>
+<div class="bar"><input id="q" class="g" type="search" placeholder="Search name, symbol, number…"><button id="snd" class="g ib" title="Sound">🔇</button><button id="th" class="g ib" title="Theme">🌓</button></div>
+</header>
+<div class="ctl g">
+<div class="row" id="cats"></div>
+<div class="row" id="sts"></div>
+<div class="temp"><b>🌡 Temperature</b><input id="tr" type="range" min="0" max="6000" value="298"><span id="tv"></span><button id="tu" class="chip">K / °C</button></div>
+</div>
+<div class="wrap"><div id="grid"></div></div>
+<div id="ov"></div>
+<aside id="dr" class="g"><div id="cb"><button id="x" class="g ib">✕</button><canvas id="cv"></canvas><small>Drag: rotate · Scroll/pinch: zoom · Shift/right-drag: pan</small></div><div id="info"></div></aside>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+// sym|name|mass|electronegativity|radius pm|ionization eV|melt K|boil K|density g/cm3|year|discoverer
+const D=`H|Hydrogen|1.008|2.20|53|13.6|14|20|0.00009|1766|Henry Cavendish
+He|Helium|4.0026||31|24.6|1|4.2|0.00018|1895|William Ramsay
+Li|Lithium|6.94|0.98|167|5.39|454|1615|0.534|1817|Johan Arfwedson
+Be|Beryllium|9.0122|1.57|112|9.32|1560|2742|1.85|1798|Louis Vauquelin
+B|Boron|10.81|2.04|87|8.30|2349|4200|2.34|1808|Humphry Davy
+C|Carbon|12.011|2.55|67|11.26|3800|4300|2.27|0|
+N|Nitrogen|14.007|3.04|56|14.53|63|77|0.00125|1772|Daniel Rutherford
+O|Oxygen|15.999|3.44|48|13.62|54|90|0.00143|1774|Joseph Priestley
+F|Fluorine|18.998|3.98|42|17.42|53|85|0.0017|1886|Henri Moissan
+Ne|Neon|20.180||38|21.56|25|27|0.0009|1898|Ramsay & Travers
+Na|Sodium|22.990|0.93|190|5.14|371|1156|0.97|1807|Humphry Davy
+Mg|Magnesium|24.305|1.31|145|7.65|923|1363|1.74|1755|Joseph Black
+Al|Aluminium|26.982|1.61|118|5.99|933|2792|2.70|1825|H. C. Ørsted
+Si|Silicon|28.085|1.90|111|8.15|1687|3538|2.33|1824|J. J. Berzelius
+P|Phosphorus|30.974|2.19|98|10.49|317|554|1.82|1669|Hennig Brand
+S|Sulfur|32.06|2.58|88|10.36|388|718|2.07|0|
+Cl|Chlorine|35.45|3.16|79|12.97|172|239|0.0032|1774|Carl Scheele
+Ar|Argon|39.948||71|15.76|84|87|0.0018|1894|Rayleigh & Ramsay
+K|Potassium|39.098|0.82|243|4.34|337|1032|0.86|1807|Humphry Davy
+Ca|Calcium|40.078|1.00|194|6.11|1115|1757|1.55|1808|Humphry Davy
+Sc|Scandium|44.956|1.36|184|6.56|1814|3109|2.99|1879|Lars Nilson
+Ti|Titanium|47.867|1.54|176|6.83|1941|3560|4.51|1791|William Gregor
+V|Vanadium|50.942|1.63|171|6.75|2183|3680|6.0|1801|Andrés del Río
+Cr|Chromium|51.996|1.66|166|6.77|2180|2944|7.15|1797|Louis Vauquelin
+Mn|Manganese|54.938|1.55|161|7.43|1519|2334|7.3|1774|Johan Gahn
+Fe|Iron|55.845|1.83|156|7.90|1811|3134|7.87|0|
+Co|Cobalt|58.933|1.88|152|7.88|1768|3200|8.86|1735|Georg Brandt
+Ni|Nickel|58.693|1.91|149|7.64|1728|3186|8.91|1751|Axel Cronstedt
+Cu|Copper|63.546|1.90|145|7.73|1358|2835|8.96|0|
+Zn|Zinc|65.38|1.65|142|9.39|693|1180|7.14|1746|Andreas Marggraf
+Ga|Gallium|69.723|1.81|136|6.00|303|2477|5.91|1875|Lecoq de Boisbaudran
+Ge|Germanium|72.630|2.01|125|7.90|1211|3106|5.32|1886|Clemens Winkler
+As|Arsenic|74.922|2.18|114|9.79|1090|1090|5.73|1250|Albertus Magnus
+Se|Selenium|78.971|2.55|103|9.75|494|958|4.81|1817|J. J. Berzelius
+Br|Bromine|79.904|2.96|94|11.81|266|332|3.12|1826|Antoine Balard
+Kr|Krypton|83.798|3.00|88|14.00|116|120|0.0037|1898|Ramsay & Travers
+Rb|Rubidium|85.468|0.82|265|4.18|312|961|1.53|1861|Bunsen & Kirchhoff
+Sr|Strontium|87.62|0.95|219|5.69|1050|1655|2.64|1790|Adair Crawford
+Y|Yttrium|88.906|1.22|212|6.22|1799|3609|4.47|1794|Johan Gadolin
+Zr|Zirconium|91.224|1.33|206|6.63|2128|4682|6.51|1789|Martin Klaproth
+Nb|Niobium|92.906|1.6|198|6.76|2750|5017|8.57|1801|Charles Hatchett
+Mo|Molybdenum|95.95|2.16|190|7.09|2896|4912|10.22|1778|Carl Scheele
+Tc|Technetium|98|1.9|183|7.28|2430|4538|11.5|1937|Perrier & Segrè
+Ru|Ruthenium|101.07|2.2|178|7.36|2607|4423|12.37|1844|Karl Claus
+Rh|Rhodium|102.91|2.28|173|7.46|2237|3968|12.41|1803|W. H. Wollaston
+Pd|Palladium|106.42|2.2|169|8.34|1828|3236|12.02|1803|W. H. Wollaston
+Ag|Silver|107.87|1.93|165|7.58|1235|2435|10.49|0|
+Cd|Cadmium|112.41|1.69|161|8.99|594|1040|8.65|1817|F. Stromeyer
+In|Indium|114.82|1.78|156|5.79|430|2345|7.31|1863|Reich & Richter
+Sn|Tin|118.71|1.96|145|7.34|505|2875|7.29|0|
+Sb|Antimony|121.76|2.05|133|8.61|904|1860|6.69|0|
+Te|Tellurium|127.60|2.1|123|9.01|723|1261|6.24|1782|F. von Reichenstein
+I|Iodine|126.90|2.66|115|10.45|387|457|4.93|1811|Bernard Courtois
+Xe|Xenon|131.29|2.6|108|12.13|161|165|0.0059|1898|Ramsay & Travers
+Cs|Caesium|132.91|0.79|298|3.89|302|944|1.93|1860|Bunsen & Kirchhoff
+Ba|Barium|137.33|0.89|253|5.21|1000|2170|3.51|1808|Humphry Davy
+La|Lanthanum|138.91|1.10|195|5.58|1193|3737|6.15|1839|Carl Mosander
+Ce|Cerium|140.12|1.12|185|5.54|1068|3716|6.77|1803|J. J. Berzelius
+Pr|Praseodymium|140.91|1.13|247|5.47|1208|3793|6.77|1885|von Welsbach
+Nd|Neodymium|144.24|1.14|206|5.53|1297|3347|7.01|1885|von Welsbach
+Pm|Promethium|145|1.13|205|5.58|1315|3273|7.26|1945|Marinsky et al.
+Sm|Samarium|150.36|1.17|238|5.64|1345|2067|7.52|1879|Lecoq de Boisbaudran
+Eu|Europium|151.96|1.2|231|5.67|1099|1802|5.24|1901|E. Demarçay
+Gd|Gadolinium|157.25|1.2|233|6.15|1585|3546|7.90|1880|de Marignac
+Tb|Terbium|158.93|1.1|225|5.86|1629|3503|8.23|1843|Carl Mosander
+Dy|Dysprosium|162.50|1.22|228|5.94|1680|2840|8.55|1886|Lecoq de Boisbaudran
+Ho|Holmium|164.93|1.23|226|6.02|1734|2993|8.79|1878|Jacques-Louis Soret
+Er|Erbium|167.26|1.24|226|6.11|1802|3141|9.07|1843|Carl Mosander
+Tm|Thulium|168.93|1.25|222|6.18|1818|2223|9.32|1879|Per Cleve
+Yb|Ytterbium|173.05|1.1|222|6.25|1097|1469|6.57|1878|de Marignac
+Lu|Lutetium|174.97|1.27|217|5.43|1925|3675|9.84|1907|Georges Urbain
+Hf|Hafnium|178.49|1.3|208|6.83|2506|4876|13.31|1923|Coster & Hevesy
+Ta|Tantalum|180.95|1.5|200|7.55|3290|5731|16.65|1802|Anders Ekeberg
+W|Tungsten|183.84|2.36|193|7.86|3695|5828|19.25|1783|de Elhuyar brothers
+Re|Rhenium|186.21|1.9|188|7.83|3459|5869|21.02|1925|Noddack & Tacke
+Os|Osmium|190.23|2.2|185|8.44|3306|5285|22.59|1803|Smithson Tennant
+Ir|Iridium|192.22|2.2|180|8.97|2719|4701|22.56|1803|Smithson Tennant
+Pt|Platinum|195.08|2.28|177|8.96|2041|4098|21.45|1735|Antonio de Ulloa
+Au|Gold|196.97|2.54|174|9.23|1337|3129|19.3|0|
+Hg|Mercury|200.59|2.00|171|10.44|234|630|13.53|0|
+Tl|Thallium|204.38|1.62|156|6.11|577|1746|11.85|1861|William Crookes
+Pb|Lead|207.2|2.33|154|7.42|601|2022|11.34|0|
+Bi|Bismuth|208.98|2.02|143|7.29|545|1837|9.78|1753|Claude Geoffroy
+Po|Polonium|209|2.0|135|8.41|527|1235|9.2|1898|Marie & Pierre Curie
+At|Astatine|210|2.2|127|9.3|575|610|7|1940|Corson et al.
+Rn|Radon|222|2.2|120|10.75|202|211|0.0097|1900|Friedrich Dorn
+Fr|Francium|223|0.7|348|4.07|300|950||1939|Marguerite Perey
+Ra|Radium|226|0.9|283|5.28|973|2010|5.5|1898|Marie & Pierre Curie
+Ac|Actinium|227|1.1|260|5.17|1323|3471|10.07|1899|André Debierne
+Th|Thorium|232.04|1.3|237|6.31|2023|5061|11.72|1829|J. J. Berzelius
+Pa|Protactinium|231.04|1.5|243|5.89|1841|4300|15.37|1913|Fajans & Göhring
+U|Uranium|238.03|1.38|240|6.19|1405|4404|19.1|1789|Martin Klaproth
+Np|Neptunium|237|1.36|221|6.27|917|4175|20.45|1940|McMillan & Abelson
+Pu|Plutonium|244|1.28|243|6.03|912|3505|19.82|1940|Glenn Seaborg et al.
+Am|Americium|243|1.3|244|5.97|1449|2880|12|1944|Seaborg et al.
+Cm|Curium|247|1.3|245|5.99|1613|3383|13.51|1944|Seaborg et al.
+Bk|Berkelium|247|1.3|244|6.2|1259|2900|14.78|1949|Seaborg et al.
+Cf|Californium|251|1.3|245|6.28|1173|1743|15.1|1950|Seaborg et al.
+Es|Einsteinium|252|1.3|245|6.42|1133||8.84|1952|Ghiorso et al.
+Fm|Fermium|257|1.3|245|6.50|1800|||1952|Ghiorso et al.
+Md|Mendelevium|258|1.3|246|6.58|1100|||1955|Ghiorso et al.
+No|Nobelium|259|1.3|246|6.65|1100|||1958|Ghiorso et al.
+Lr|Lawrencium|266|1.3|246|4.9|1900|||1961|Ghiorso et al.
+Rf|Rutherfordium|267|||||||1964|JINR Dubna
+Db|Dubnium|268|||||||1967|JINR Dubna
+Sg|Seaborgium|269|||||||1974|Berkeley / Dubna
+Bh|Bohrium|270|||||||1981|GSI Darmstadt
+Hs|Hassium|277|||||||1984|GSI Darmstadt
+Mt|Meitnerium|278|||||||1982|GSI Darmstadt
+Ds|Darmstadtium|281|||||||1994|GSI Darmstadt
+Rg|Roentgenium|282|||||||1994|GSI Darmstadt
+Cn|Copernicium|285|||||||1996|GSI Darmstadt
+Nh|Nihonium|286|||||||2004|RIKEN
+Fl|Flerovium|289|||||||1998|JINR Dubna
+Mc|Moscovium|290|||||||2003|JINR / LLNL
+Lv|Livermorium|293|||||||2000|JINR / LLNL
+Ts|Tennessine|294|||||||2010|JINR / ORNL
+Og|Oganesson|294|||||||2002|JINR / LLNL`;
+const E=D.split("\n").map((r,i)=>{const[s,n,m,en,rad,ie,mp,bp,rho,yr,by]=r.split("|");return{z:i+1,s,n,m,en,rad,ie,mp:mp?+mp:null,bp:bp?+bp:null,rho,yr:+yr,by}});
+const CATS=[["Alkali metal","#ff6b6b","3 11 19 37 55 87"],["Alkaline earth","#ffa94d","4 12 20 38 56 88"],["Transition metal","#ffd43b",""],["Post-transition","#69db7c","13 31 49 50 81 82 83 84 113 114 115 116"],["Metalloid","#38d9a9","5 14 32 33 51 52"],["Nonmetal","#4dabf7","1 6 7 8 15 16 34"],["Halogen","#748ffc","9 17 35 53 85 117"],["Noble gas","#da77f2","2 10 18 36 54 86 118"],["Lanthanide","#f783ac",""],["Actinide","#c0a062",""]];
+const cat=z=>z>=57&&z<=71?8:z>=89&&z<=103?9:CATS.findIndex(c=>(" "+c[2]+" ").includes(" "+z+" "))>=0?CATS.findIndex(c=>(" "+c[2]+" ").includes(" "+z+" ")):2;
+function pos(z){if(z==1)return[1,1];if(z==2)return[1,18];if(z<5)return[2,z-2];if(z<11)return[2,z+8];if(z<13)return[3,z-10];if(z<19)return[3,z];if(z<37)return[4,z-18];if(z<55)return[5,z-36];if(z<57)return[6,z-54];if(z<72)return[9,z-54];if(z<87)return[6,z-68];if(z<89)return[7,z-86];if(z<104)return[10,z-86];return[7,z-100]}
+const per=z=>z<3?1:z<11?2:z<19?3:z<37?4:z<55?5:z<87?6:7;
+const grp=z=>{const[r,c]=pos(z);return r>8?"—":c};
+const blk=z=>{const[r,c]=pos(z);return r>8?"f":(z==2||c<3)?"s":c>12?"p":"d"};
+const ORD="1s 2s 2p 3s 3p 4s 3d 4p 5s 4d 5p 6s 4f 5d 6p 7s 5f 6d 7p".split(" "),CAP={s:2,p:6,d:10,f:14};
+const EX={24:'4s1 3d5',29:'4s1 3d10',41:'5s1 4d4',42:'5s1 4d5',44:'5s1 4d7',45:'5s1 4d8',46:'5s0 4d10',47:'5s1 4d10',57:'4f0 5d1',58:'4f1 5d1',64:'4f7 5d1',78:'6s1 5d9',79:'6s1 5d10',89:'5f0 6d1',90:'5f0 6d2',91:'5f2 6d1',92:'5f3 6d1',93:'5f4 6d1',96:'5f7 6d1',103:'6d0 7p1'};
+function cfg(z){let n=z,o={};for(const s of ORD){const c=Math.min(n,CAP[s[1]]);o[s]=c;n-=c;if(!n)break}(EX[z]||"").split(" ").filter(Boolean).forEach(t=>o[t.slice(0,2)]=+t.slice(2));return o}
+const shells=z=>{const o=cfg(z),a=[];for(const k in o){const i=k[0]-1;a[i]=(a[i]||0)+o[k]}return a.map(v=>v||0)};
+const cfgStr=z=>{const o=cfg(z);return ORD.filter(k=>o[k]).map(k=>k+"<sup>"+o[k]+"</sup>").join(" ")};
+const ph=(e,T)=>e.mp==null?3:T<e.mp?0:(e.bp==null||T<e.bp)?(T<e.mp?0:e.bp==null?1:1):2;
+const PN=["Solid","Liquid","Gas","Unknown"];
+const rad=z=>z==43||z==61||z>=84;
+const $=id=>document.getElementById(id),st={q:"",cat:null,st:null,T:298,K:true,snd:false};
+const grid=$("grid");
+E.forEach(e=>{const[r,c]=pos(e.z),k=cat(e.z);const b=document.createElement("button");b.className="t";b.style.cssText=`grid-row:${r};grid-column:${c};--c:${CATS[k][1]}`;
+b.innerHTML=`<i class="n">${e.z}</i><i class="p"></i><b>${e.s}</b><span>${e.n}</span><span>${e.m}</span>`;b.onclick=()=>open(e);e.el=b;grid.append(b)});
+[[6,"57–71","#f783ac"],[7,"89–103","#c0a062"]].forEach(([r,t])=>{const d=document.createElement("div");d.className="ph";d.style.cssText=`grid-row:${r};grid-column:3`;d.textContent=t;grid.append(d)});
+CATS.forEach((c,i)=>{const b=document.createElement("button");b.className="chip";b.style.setProperty("--c",c[1]);b.innerHTML=`<i></i>${c[0]}`;b.onclick=()=>{st.cat=st.cat===i?null:i;b.parentNode.querySelectorAll(".chip").forEach((x,j)=>x.classList.toggle("on",st.cat===j));apply()};$("cats").append(b)});
+PN.forEach((n,i)=>{const b=document.createElement("button");b.className="chip";b.textContent=n;b.onclick=()=>{st.st=st.st===i?null:i;[...$("sts").querySelectorAll(".chip")].forEach((x,j)=>x.classList.toggle("on",st.st===j));apply()};$("sts").append(b)});
+$("sts").prepend(Object.assign(document.createElement("b"),{textContent:"State @ temperature:",style:"font-size:.75rem;margin-right:4px"}));
+function apply(){const q=st.q.trim().toLowerCase();E.forEach(e=>{const p=ph(e,st.T);e.el.querySelector(".p").className="p s"+p;
+const m=(!q||e.n.toLowerCase().includes(q)||e.s.toLowerCase()==q||e.s.toLowerCase().startsWith(q)||String(e.z)==q)&&(st.cat===null||cat(e.z)===st.cat)&&(st.st===null||p===st.st);e.el.classList.toggle("dim",!m)});
+const T=st.T;$("tv").textContent=st.K?T+" K":Math.round(T-273.15)+" °C"}
+$("q").oninput=e=>{st.q=e.target.value;apply()};$("tr").oninput=e=>{st.T=+e.target.value;apply()};$("tu").onclick=()=>{st.K=!st.K;apply()};
+$("th").onclick=()=>{const r=document.documentElement,d=(r.dataset.theme||"dark")==="dark";r.dataset.theme=d?"light":"dark";try{localStorage.setItem("th",r.dataset.theme)}catch(_){}};
+try{document.documentElement.dataset.theme=localStorage.getItem("th")||"dark"}catch(_){document.documentElement.dataset.theme="dark"}
+let ac;$("snd").onclick=()=>{st.snd=!st.snd;$("snd").textContent=st.snd?"🔊":"🔇";beep(660)};
+function beep(f){if(!st.snd)return;try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain();o.frequency.value=f;o.type="sine";g.gain.setValueAtTime(.08,ac.currentTime);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+.18);o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+.2)}catch(_){}}
+document.addEventListener("mouseover",e=>{if(e.target.closest&&e.target.closest(".t"))beep(880)});
+// ---------- Drawer ----------
+const kv=(a,b)=>`<div class="kv"><span>${a}</span><span>${b}</span></div>`,u=(v,s)=>v===""||v==null?"—":v+" "+s;
+function open(e){beep(520);const k=cat(e.z),c=CATS[k][1],K=x=>x==null?"—":x+" K ("+Math.round(x-273.15)+" °C)";
+const F=" 1 3 11 12 15 16 19 20 37 55 56 87 ",X=" 4 33 34 35 48 80 81 82 84 86 88 92 ",R=" 1 3 4 9 11 12 15 17 19 20 35 37 38 55 56 87 88 ";
+const h=(t,on)=>`<div class="${on?"a":""}">${t}</div>`;
+$("info").innerHTML=`<div class="hd" style="--c:${c}"><div class="big">${e.s}</div><div><h2>${e.n}</h2><p>#${e.z} · ${CATS[k][0]} · ${e.m} u</p></div></div>
+<div class="sec g"><h3>Basic info</h3>${kv("Category",CATS[k][0])}${kv("Group",grp(e.z))}${kv("Period",per(e.z))}${kv("Block",blk(e.z)+"-block")}${kv("Phase at STP",PN[ph(e,293)])}${kv("Shells (K, L, M…)",shells(e.z).join(", "))}</div>
+<div class="sec g"><h3>Atomic properties</h3>${kv("Electron configuration",cfgStr(e.z))}${kv("Electronegativity",e.en||"—")}${kv("Atomic radius",u(e.rad,"pm"))}${kv("Ionization energy",u(e.ie,"eV"))}</div>
+<div class="sec g"><h3>Thermodynamics</h3>${kv("Melting point",K(e.mp))}${kv("Boiling point",K(e.bp))}${kv("Density",u(e.rho,"g/cm³"))}</div>
+<div class="sec g"><h3>History</h3>${kv("Discovered by",e.by||"Known since antiquity")}${kv("Year",e.yr?e.yr:"Ancient")}</div>
+<div class="sec g"><h3>Hazards</h3><div class="hz">${h("🔥 Flammable",F.includes(" "+e.z+" "))}${h("☠️ Toxic",X.includes(" "+e.z+" ")||rad(e.z))}${h("⚠️ Reactive",R.includes(" "+e.z+" "))}${h("☢️ Radioactive",rad(e.z))}</div></div>`;
+document.body.classList.add("open");setTimeout(()=>show3d(shells(e.z),c),60)}
+function close(){document.body.classList.remove("open");cancelAnimationFrame(raf);beep(400)}
+$("x").onclick=close;$("ov").onclick=close;addEventListener("keydown",e=>e.key==="Escape"&&close());
+// ---------- 3D ----------
+let R,S,C,G,els=[],raf,last=0;
+function glow(col){const c=document.createElement("canvas");c.width=c.height=128;const x=c.getContext("2d"),g=x.createRadialGradient(64,64,0,64,64,64);g.addColorStop(0,col);g.addColorStop(.3,col+"88");g.addColorStop(1,"#0000");x.fillStyle=g;x.fillRect(0,0,128,128);return new THREE.CanvasTexture(c)}
+function show3d(sh,col){const cv=$("cv"),w=cv.clientWidth,h=cv.clientHeight;R=R||new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true});R.setPixelRatio(Math.min(devicePixelRatio,2));R.setSize(w,h,false);
+S=new THREE.Scene();C=new THREE.PerspectiveCamera(50,w/h,.1,100);C.position.z=Math.max(6,sh.length*1.1+4);G=new THREE.Group();S.add(G);els=[];
+G.add(new THREE.Mesh(new THREE.SphereGeometry(.55,32,32),new THREE.MeshBasicMaterial({color:col})));
+const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:glow(col),blending:THREE.AdditiveBlending,transparent:true,depthWrite:false}));sp.scale.set(3.6,3.6,1);G.add(sp);
+sh.forEach((n,i)=>{const r=1.2+i*.7,p=new THREE.Group();p.rotation.set(i*.55+.3,i*.8,i*.3);G.add(p);
+p.add(new THREE.Mesh(new THREE.TorusGeometry(r,.012,8,128),new THREE.MeshBasicMaterial({color:0x8fa0ff,transparent:true,opacity:.45})));
+for(let k=0;k<n;k++){const m=new THREE.Mesh(new THREE.SphereGeometry(.075,12,12),new THREE.MeshBasicMaterial({color:0xffffff}));p.add(m);els.push({m,r,a:k/n*6.283,v:1.1/(1+i*.6)})}});
+cancelAnimationFrame(raf);last=performance.now();loop()}
+function loop(t){raf=requestAnimationFrame(loop);const d=((t||last)-last)/1000;last=t||last;els.forEach(o=>{o.a+=o.v*d;o.m.position.set(Math.cos(o.a)*o.r,Math.sin(o.a)*o.r,0)});if(!drag)G.rotation.y+=d*.25;R.render(S,C)}
+let drag=false;const ptr=new Map();let pd=0;const cv=$("cv");
+cv.oncontextmenu=e=>e.preventDefault();
+cv.onpointerdown=e=>{cv.setPointerCapture(e.pointerId);ptr.set(e.pointerId,e);drag=true;pd=0};
+cv.onpointerup=cv.onpointercancel=e=>{ptr.delete(e.pointerId);drag=ptr.size>0;pd=0};
+cv.onpointermove=e=>{const p=ptr.get(e.pointerId);if(!p)return;const dx=e.clientX-p.clientX,dy=e.clientY-p.clientY;ptr.set(e.pointerId,e);
+if(ptr.size==2){const[a,b]=[...ptr.values()],d=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY);if(pd)C.position.z=Math.min(30,Math.max(3,C.position.z-(d-pd)*.03));pd=d}
+else if(e.shiftKey||e.buttons==2){const s=C.position.z*.0016;G.position.x+=dx*s;G.position.y-=dy*s}
+else{G.rotation.y+=dx*.01;G.rotation.x+=dy*.01}};
+cv.onwheel=e=>{e.preventDefault();C.position.z=Math.min(30,Math.max(3,C.position.z*(1+e.deltaY*.001)))};
+addEventListener("resize",()=>{if(!R||!document.body.classList.contains("open"))return;const w=cv.clientWidth,h=cv.clientHeight;R.setSize(w,h,false);C.aspect=w/h;C.updateProjectionMatrix()});
+apply();
+</script></body></html>
