@@ -1,0 +1,22 @@
+{
+  "cleanUrls": false,
+  "trailingSlash": false,
+  "rewrites": [
+    {
+      "source": "/periodic-table",
+      "destination": "/periodic-table.html"
+    },
+    {
+      "source": "/periodic-table/",
+      "destination": "/periodic-table.html"
+    },
+    {
+      "source": "/periodictable",
+      "destination": "/periodic-table.html"
+    },
+    {
+      "source": "/periodic-table.html/",
+      "destination": "/periodic-table.html"
+    }
+  ]
+}
