@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CodexStudys – 3D Periodic Table</title>
+<style>
+:root{--bg:#06060f;--bg2:#17123a;--tx:#f3f1ff;--mu:#a29fc8;--gl:rgba(255,255,255,.055);--bd:rgba(255,255,255,.13);--gold:#f6c85f;--vio:#8f7bff;--card:rgba(255,255,255,.06);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+:root[data-theme="light"]{--bg:#f4f5f9;--bg2:#e1defc;--tx:#14161f;--mu:#5b6072;--gl:rgba(255,255,255,.78);--bd:rgba(20,22,35,.14);--gold:#c98a00;--vio:#6c5ce7;--card:rgba(255,255,255,.85)}
+:root[data-theme="sandalwood"]{--bg:#1c130c;--bg2:#3a2616;--tx:#f6ead9;--mu:#b89a7c;--gl:rgba(255,225,190,.07);--bd:rgba(255,225,190,.16);--gold:#ff9d4d;--vio:#cd8a4a;--card:rgba(255,225,190,.06)}
+:root[data-theme="forest-emerald"]{--bg:#06140f;--bg2:#0f3a28;--tx:#eafff3;--mu:#83b39c;--gl:rgba(180,255,220,.06);--bd:rgba(180,255,220,.15);--gold:#55ddbb;--vio:#2fbf7a;--card:rgba(180,255,220,.06)}
+:root[data-theme="ocean-deep"]{--bg:#050e17;--bg2:#0c3350;--tx:#eaf6ff;--mu:#7ea3bd;--gl:rgba(170,225,255,.06);--bd:rgba(170,225,255,.15);--gold:#2fd3c7;--vio:#2196e0;--card:rgba(170,225,255,.06)}
+:root[data-theme="sakura-blossom"]{--bg:#fff3f6;--bg2:#ffd9e5;--tx:#3c1420;--mu:#a26478;--gl:rgba(255,255,255,.8);--bd:rgba(180,40,80,.16);--gold:#e08a3c;--vio:#ec6f96;--card:rgba(255,255,255,.85)}
+:root[data-theme="dracula-midnight"]{--bg:#14121f;--bg2:#2f2750;--tx:#f3ecff;--mu:#a08fc9;--gl:rgba(220,200,255,.07);--bd:rgba(220,200,255,.15);--gold:#50fa7b;--vio:#bd93f9;--card:rgba(220,200,255,.06)}
+:root[data-theme="lavender-mist"]{--bg:#f5f2fc;--bg2:#e0d3fb;--tx:#2c2140;--mu:#7a6a9c;--gl:rgba(255,255,255,.8);--bd:rgba(80,50,140,.16);--gold:#d9832a;--vio:#9b7be0;--card:rgba(255,255,255,.85)}
+:root[data-theme="cyberpunk-neon"]{--bg:#05020a;--bg2:#2a0a3d;--tx:#f2e9ff;--mu:#b48ad9;--gl:rgba(255,60,220,.06);--bd:rgba(255,60,220,.28);--gold:#2af5ff;--vio:#ff2ec4;--card:rgba(255,60,220,.06)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;min-height:100vh;color:var(--tx);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:radial-gradient(900px 500px at 10% -5%,color-mix(in srgb,var(--vio) 38%,transparent),transparent 60%),radial-gradient(800px 500px at 100% 0,color-mix(in srgb,var(--gold) 18%,transparent),transparent 55%),radial-gradient(900px 700px at 50% 120%,color-mix(in srgb,var(--vio) 14%,transparent),transparent 60%),var(--bg) fixed;transition:background-color .4s,color .3s}
+button,input{font:inherit;color:inherit}button{cursor:pointer}
+.g{background:var(--gl);border:1px solid var(--bd);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:16px}
+header{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;padding:14px 16px 6px}
+.brand{display:flex;align-items:center;gap:10px}
+.logo{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;font-size:1.3rem;background:linear-gradient(135deg,var(--vio),var(--gold));box-shadow:0 6px 24px color-mix(in srgb,var(--vio) 50%,transparent)}
+h1{margin:0;font-size:1.2rem;font-weight:800;letter-spacing:.3px;background:linear-gradient(90deg,var(--tx),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent}
+h1 small{display:block;font-size:.68rem;color:var(--mu);font-weight:500;-webkit-text-fill-color:var(--mu);letter-spacing:.4px}
+.bar{display:flex;gap:8px;align-items:center}
+.ib{width:40px;height:40px;border-radius:12px;font-size:1rem;display:grid;place-items:center;text-decoration:none;color:inherit}
+input[type=search]{padding:10px 14px;border-radius:14px;width:min(250px,56vw);outline:none}
+input[type=search]:focus{border-color:var(--vio);box-shadow:0 0 0 3px color-mix(in srgb,var(--vio) 30%,transparent)}
+.tabs{display:flex;gap:6px;margin:8px 16px 4px;padding:5px;overflow-x:auto}
+.tab{flex:1;white-space:nowrap;padding:10px 14px;border:0;border-radius:12px;background:transparent;font-weight:700;font-size:.85rem;color:var(--mu);transition:.2s}
+.tab.on{background:linear-gradient(135deg,var(--vio),color-mix(in srgb,var(--vio) 55%,var(--gold)));color:#fff;box-shadow:0 6px 20px color-mix(in srgb,var(--vio) 50%,transparent)}
+.view{display:none}.view.on{display:block;animation:fi .35s}
+@keyframes fi{from{opacity:0;transform:translateY(8px)}}
+.ctl{margin:8px 16px 10px;padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+.row{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.chip{padding:6px 12px;border-radius:99px;font-size:.74rem;border:1px solid var(--bd);background:transparent;display:flex;gap:6px;align-items:center;transition:.2s}
+.chip i{width:9px;height:9px;border-radius:50%;background:var(--c)}
+.chip.on{background:var(--c,#7c5cff);color:#fff;border-color:transparent;box-shadow:0 0 14px var(--c,#7c5cff)}
+.temp{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:.8rem}
+.temp input{flex:1;min-width:150px;accent-color:var(--vio)}#tv{min-width:92px;font-weight:700;color:var(--gold)}
+.sw{display:flex;gap:8px;align-items:center;font-size:.78rem;font-weight:700}
+.tog{position:relative;width:46px;height:26px;border-radius:99px;border:1px solid var(--bd);background:var(--gl);padding:0}
+.tog::after{content:"";position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:var(--mu);transition:.25s}
+.tog.on,.tog[aria-checked="true"]{background:linear-gradient(135deg,var(--vio),var(--gold));border-color:transparent}.tog.on::after,.tog[aria-checked="true"]::after{left:22px;background:#fff}
+.wrap{overflow-x:auto;padding:4px 16px 30px}
+#grid{display:grid;grid-template-columns:repeat(18,minmax(56px,1fr));grid-template-rows:repeat(7,auto) 16px auto auto;gap:4px;min-width:1020px}
+.t{--c:#888;position:relative;border-radius:10px;padding:3px 4px;text-align:center;min-height:68px;display:flex;flex-direction:column;justify-content:center;background:linear-gradient(160deg,color-mix(in srgb,var(--c) 30%,transparent),color-mix(in srgb,var(--c) 8%,transparent));border:1px solid color-mix(in srgb,var(--c) 55%,transparent);border-top:2px solid var(--c);transition:transform .18s,box-shadow .18s,opacity .25s;color:var(--tx)}
+.t:hover{transform:translateY(-3px) scale(1.12);z-index:3;box-shadow:0 8px 26px color-mix(in srgb,var(--c) 70%,transparent)}
+.t.dim{opacity:.1;pointer-events:none}
+.t b{font-size:1.1rem;line-height:1.1;font-weight:800}.t .n{position:absolute;top:2px;left:4px;font-size:.58rem;color:var(--mu);font-style:normal}
+.t span{font-size:.54rem;color:var(--mu);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.t .mn{display:none;font-size:.62rem;font-weight:800;color:var(--gold)}
+body.tm .t .ms,body.tm .t .nm{display:none}body.tm .t .mn{display:block}
+.t .p{position:absolute;top:3px;right:4px;width:6px;height:6px;border-radius:50%}
+.s0{background:#9aa4c7}.s1{background:#4dabf7;box-shadow:0 0 6px #4dabf7}.s2{background:#ff922b;box-shadow:0 0 6px #ff922b;animation:pl 1.4s infinite}.s3{background:transparent;border:1px dashed var(--mu)}
+@keyframes pl{50%{opacity:.4}}
+.ph{border-radius:10px;border:1px dashed var(--bd);font-size:.65rem;color:var(--mu);display:flex;align-items:center;justify-content:center}
+#ov{position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:.3s;z-index:9}
+#dr{position:fixed;top:0;right:0;bottom:0;width:min(470px,100%);z-index:10;transform:translateX(105%);transition:transform .35s cubic-bezier(.2,.8,.2,1);overflow-y:auto;border-radius:22px 0 0 22px;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px);background:var(--bg)}
+body.open #dr{transform:none}body.open #ov{opacity:1;pointer-events:auto}
+#cb{height:260px;position:relative;background:radial-gradient(circle,var(--bg2),var(--bg))}
+#cv{width:100%;height:100%;display:block;touch-action:none;cursor:grab}
+#cb small{position:absolute;bottom:6px;left:10px;font-size:.65rem;color:var(--mu)}
+#x{position:absolute;top:10px;right:10px;z-index:2}
+.hd{padding:12px 18px;display:flex;gap:14px;align-items:center}
+.big{font-size:2.6rem;font-weight:900;color:var(--c);text-shadow:0 0 24px var(--c)}
+.hd h2{margin:0;font-size:1.3rem}.hd p{margin:0;color:var(--mu);font-size:.8rem}
+.sec{margin:0 14px 12px;padding:10px 14px}.sec h3{margin:0 0 6px;font-size:.7rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--mu)}
+.kv{display:flex;justify-content:space-between;padding:5px 0;font-size:.85rem;border-bottom:1px solid var(--bd)}.kv:last-child{border:0}.kv span:first-child{color:var(--mu)}.kv span:last-child{text-align:right;max-width:62%}
+.hz{display:flex;gap:8px;flex-wrap:wrap}.hz div{padding:6px 10px;border-radius:10px;font-size:.78rem;border:1px solid var(--bd);opacity:.3}.hz .a{opacity:1;border-color:#ff6b6b;box-shadow:0 0 10px rgba(255,107,107,.4)}
+.trk{border-color:var(--gold)!important;background:linear-gradient(135deg,rgba(246,200,95,.14),rgba(143,123,255,.1))}
+.trk .w{font-size:1.5rem;font-weight:900;color:var(--gold)}.trk .w small{font-size:.7rem;color:var(--mu);font-weight:600;display:block}
+/* tricks */
+.pad{padding:8px 16px 40px;max-width:980px;margin:0 auto}
+.hero{padding:16px 18px;margin-bottom:14px;background:linear-gradient(135deg,rgba(124,92,255,.28),rgba(246,200,95,.16))}
+.hero h2{margin:0 0 4px;font-size:1.15rem}.hero p{margin:0;color:var(--mu);font-size:.85rem;line-height:1.5}
+.pill{display:inline-block;padding:9px 18px;border-radius:99px;font-weight:800;font-size:.95rem;color:#fff;background:linear-gradient(135deg,#0f9d58,#34c27a);box-shadow:0 6px 18px rgba(15,157,88,.35);margin:6px 0 10px}
+.blk{margin-bottom:18px;padding:12px 14px}
+.sub{font-size:.72rem;letter-spacing:1px;text-transform:uppercase;color:var(--mu);margin:10px 0 6px;font-weight:700}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.tc{--c:#888;display:flex;flex-direction:column;align-items:center;min-width:64px;padding:7px 9px;border-radius:12px;border:1px solid color-mix(in srgb,var(--c) 55%,transparent);background:linear-gradient(160deg,color-mix(in srgb,var(--c) 26%,transparent),transparent);transition:.15s}
+.tc:active{transform:scale(.94)}.tc b{font-size:1rem;font-weight:800}.tc em{font-style:normal;font-size:.78rem;color:var(--gold);font-weight:700;text-align:center}
+.sent{margin-top:8px;padding:9px 12px;border-radius:12px;font-size:.88rem;line-height:1.5;background:rgba(246,200,95,.1);border-left:3px solid var(--gold)}
+.note{font-size:.76rem;color:var(--mu);margin-top:6px}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.fc{padding:12px;border-radius:14px;border:1px solid var(--bd);background:var(--card);text-align:center}.fc b{display:block;font-size:1.4rem;color:var(--gold)}.fc span{font-size:.75rem;color:var(--mu)}
+.tr{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--bd);font-size:.85rem}.tr:last-child{border:0}.tr span:last-child{font-weight:700;color:var(--gold);text-align:right}
+/* quiz */
+.qz{text-align:center;padding:22px 16px}.qz .sc{font-size:.8rem;color:var(--mu);display:flex;justify-content:space-between}
+.qz .qw{font-size:2.4rem;font-weight:900;color:var(--gold);margin:18px 0 4px}.qz .qs{color:var(--mu);font-size:.85rem;margin-bottom:14px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}.opt{padding:16px;border-radius:14px;border:1px solid var(--bd);background:var(--card);font-size:1.3rem;font-weight:800}
+.opt.ok{background:#12a05a;color:#fff;border-color:transparent}.opt.no{background:#d63b4a;color:#fff;border-color:transparent}
+.nx{margin-top:14px;padding:12px 26px;border:0;border-radius:99px;background:linear-gradient(135deg,var(--vio),color-mix(in srgb,var(--vio) 55%,var(--gold)));color:#fff;font-weight:800}
+
+/* quiz v2 */
+.qz{text-align:left;padding:16px 14px}.qrow{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}.qz .chip{font-size:.74rem;padding:7px 12px}.qz .chip.on{--c:#7c5cff}
+.qz .sc{margin:10px 0 6px;gap:8px;font-weight:700}.qmeta{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}
+.bd{font-size:.68rem;font-weight:800;padding:3px 9px;border-radius:99px;border:1px solid var(--bd);color:var(--mu)}.bd.l1{color:#34c27a;border-color:#34c27a}.bd.l2{color:#f6c85f;border-color:#f6c85f}.bd.l3{color:#ff6b6b;border-color:#ff6b6b}
+.qq{font-size:1.05rem;font-weight:700;line-height:1.5;margin:10px 0 14px}
+.opts2{display:grid;grid-template-columns:1fr;gap:9px}@media(min-width:640px){.opts2{grid-template-columns:1fr 1fr}}
+.opt2{display:flex;gap:10px;align-items:center;text-align:left;padding:13px 14px;border-radius:14px;border:1px solid var(--bd);background:var(--card);font-size:.95rem;font-weight:600;transition:.15s}
+.opt2 b{flex:none;width:28px;height:28px;border-radius:9px;display:grid;place-items:center;background:var(--gl);border:1px solid var(--bd);font-size:.8rem}
+.opt2:not(:disabled):active{transform:scale(.98)}.opt2.ok{background:#12a05a;color:#fff;border-color:transparent}.opt2.no{background:#d63b4a;color:#fff;border-color:transparent}.opt2:disabled{cursor:default}
+.ex{margin-top:12px;padding:11px 13px;border-radius:12px;font-size:.88rem;line-height:1.55;background:rgba(246,200,95,.1);border-left:3px solid var(--gold)}.ex.g{border-color:#34c27a}.ex.r{border-color:#ff6b6b}
+.qres{text-align:left}.big2{font-size:3rem;font-weight:900;color:var(--gold);text-align:center}.big2 small{font-size:1rem;color:var(--mu)}.qres .qs{text-align:center}.rv{padding:10px 0;border-top:1px solid var(--bd)}.rv .qq{font-size:.92rem;margin:0 0 6px}
+
+#fxCanvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+header,.tabs,.view,.ovl{position:relative;z-index:1}
+.t.fv::after{content:"★";position:absolute;bottom:2px;right:4px;font-size:.62rem;color:var(--gold)}
+.ovl{position:fixed;inset:0;z-index:30;display:none;place-items:center;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);padding:16px}
+.ovl.on{display:grid;animation:fi .25s}
+.mdl{width:min(100%,540px);max-height:90vh;overflow:auto;padding:20px;position:relative;background:var(--bg);border:1px solid var(--bd);border-radius:22px;box-shadow:0 30px 80px rgba(0,0,0,.5)}
+.mdl h2{margin:0 0 4px;font-size:1.15rem}.mdl>p{margin:0 0 12px;color:var(--mu);font-size:.82rem}
+.cl{position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:50%;border:1px solid var(--bd);background:var(--gl);font-size:1.1rem}
+.og{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.op{position:relative;display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:14px;border:1px solid var(--bd);background:var(--card);font-size:.82rem;font-weight:700;text-align:left;transition:.15s}
+.op:active{transform:scale(.96)}.op.active{border-color:var(--vio);background:color-mix(in srgb,var(--vio) 16%,transparent)}
+.op.active::after{content:"✓";position:absolute;top:6px;right:9px;font-size:.75rem;color:var(--vio)}
+.sw2{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;font-size:1.1rem;flex:none}
+.pr{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-top:1px solid var(--bd);font-size:.88rem}
+.act{display:flex;gap:8px;padding:0 14px 12px;flex-wrap:wrap}.act button{flex:1;min-width:110px;padding:10px;border-radius:12px;border:1px solid var(--bd);background:var(--gl);font-weight:700;font-size:.82rem}
+.act button.on{background:linear-gradient(135deg,var(--vio),var(--gold));color:#fff;border-color:transparent}
+.lk{background:none;border:0;color:var(--vio);font-weight:700;font-size:.8rem;padding:4px 0;text-decoration:underline}.lk.dg{color:#ff5d6c}
+#toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translate(-50%,30px);opacity:0;padding:11px 18px;border-radius:99px;background:var(--tx);color:var(--bg);font-weight:700;font-size:.82rem;z-index:60;transition:.3s;pointer-events:none}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+html[data-contrast="high"]{--mu:var(--tx);--bd:color-mix(in srgb,var(--tx) 60%,transparent)}
+html[data-contrast="high"] .t,html[data-contrast="high"] .tc{border-width:2px}
+html[data-contrast="high"] .t .n,html[data-contrast="high"] .t span{color:var(--tx)}
+html[data-reduced-motion="true"] *{animation:none!important;transition:none!important}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style><meta name="theme-color" content="#06060f">
+<script>(function(){try{var r=document.documentElement,t=localStorage.getItem("codex-studys-theme")||"system";if(t==="system")t=matchMedia("(prefers-color-scheme: light)").matches?"light":"dark";r.dataset.theme=t;r.dataset.contrast=localStorage.getItem("codex-studys-contrast")==="true"?"high":"normal";r.dataset.reducedMotion=localStorage.getItem("codex-studys-reduced-motion")==="true"?"true":"false"}catch(e){document.documentElement.dataset.theme="dark"}})()</script>
+</head><body>
+<header>
+<div class="brand"><a href="index.html" class="g ib" title="Home">←</a><div class="logo">⚛</div>
+<h1>CodexStudys<small>Premium Periodic Table · Tricks · NEET/JEE Quiz</small></h1></div>
+<div class="bar"><input id="q" class="g" type="search" placeholder="Search name, symbol, number…"><button id="snd" class="g ib" title="Sound">🔇</button><button id="fxb" class="g ib" title="Animation effects">✨</button><button id="th" class="g ib" title="Theme mode">🎨</button></div>
+</header>
+<nav class="tabs g"><button class="tab on" data-v="vt">🧪 Table</button><button class="tab" data-v="vk">🧠 Tricks</button><button class="tab" data-v="vq">🎯 NEET/JEE Quiz</button></nav>
+<section id="vt" class="view on">
+<div class="ctl g">
+<div class="sw"><button id="tmb" class="tog" aria-label="Show tricks on tiles"></button><span>🧠 Trick mode – har box me trick word dikhao</span><button id="tmm" class="chip" style="display:none">d-block: L→R</button></div>
+<div class="row" id="cats"></div>
+<div class="row" id="sts"></div>
+<div class="temp"><b>🌡 Temperature</b><input id="tr" type="range" min="0" max="6000" value="298"><span id="tv"></span><button id="tu" class="chip">K / °C</button></div>
+</div>
+<div class="wrap"><div id="grid"></div></div>
+</section>
+<section id="vk" class="view"><div class="pad" id="tk"></div></section>
+<section id="vq" class="view"><div class="pad"><div class="qz g" id="qz"></div></div></section>
+<div class="ovl" id="themeModal"><div class="mdl"><button class="cl" data-close="themeModal">×</button><h2>🎨 Select Theme Mode</h2><p>Apna vibe chuno — turant apply hota hai.</p>
+<div class="og"><button class="op theme-option" data-theme="light"><span class="sw2" style="background:linear-gradient(140deg,#ffd97a,#ff9f43)">☀️</span>Light Mode</button><button class="op theme-option" data-theme="dark"><span class="sw2" style="background:linear-gradient(140deg,#3b4a6b,#1c2540)">🌙</span>Dark Mode</button><button class="op theme-option" data-theme="sandalwood"><span class="sw2" style="background:linear-gradient(140deg,#cd8a4a,#8a5a28)">🌳</span>Sandalwood</button><button class="op theme-option" data-theme="forest-emerald"><span class="sw2" style="background:linear-gradient(140deg,#2fbf7a,#0d5c39)">🍃</span>Forest Emerald</button><button class="op theme-option" data-theme="ocean-deep"><span class="sw2" style="background:linear-gradient(140deg,#2196e0,#0a3a5c)">🌊</span>Ocean Deep</button><button class="op theme-option" data-theme="sakura-blossom"><span class="sw2" style="background:linear-gradient(140deg,#ffb6c9,#ec6f96)">🌸</span>Sakura Blossom</button><button class="op theme-option" data-theme="dracula-midnight"><span class="sw2" style="background:linear-gradient(140deg,#bd93f9,#44337a)">👻</span>Dracula Midnight</button><button class="op theme-option" data-theme="lavender-mist"><span class="sw2" style="background:linear-gradient(140deg,#d9c8fb,#9b7be0)">🪄</span>Lavender Mist</button><button class="op theme-option" data-theme="cyberpunk-neon"><span class="sw2" style="background:linear-gradient(140deg,#ff2ec4,#2af5ff)">⚡</span>Cyberpunk Neon</button><button class="op theme-option" data-theme="system"><span class="sw2" style="background:linear-gradient(140deg,#6b7280,#1f2430)">◐</span>System Default</button></div>
+<div class="pr"><span>High contrast</span><button class="tog" id="contrastToggle" aria-checked="false"></button></div>
+<div class="pr"><span>Reduce motion</span><button class="tog" id="motionToggle" aria-checked="false"></button></div>
+<div class="pr"><button class="lk" id="expF">Export favorites</button><button class="lk" id="impF">Import favorites</button><input type="file" id="impFile" accept="application/json" hidden><button class="lk dg" id="clrF">Clear favorites</button></div></div></div>
+<div class="ovl" id="effectsModal"><div class="mdl"><button class="cl" data-close="effectsModal">×</button><h2>✨ Animation Effects</h2><p>Background vibe chuno — screen ke peeche chalega.</p>
+<div class="pr" style="border:0"><span>Enable Effects</span><button class="tog" id="fxEnableToggle" aria-checked="false"></button></div>
+<div class="og" id="effectsGrid"><button class="op effect-option" data-effect="firecracker"><span class="sw2">🎆</span>Firecracker</button><button class="op effect-option" data-effect="rain"><span class="sw2">🌧️</span>Rain</button><button class="op effect-option" data-effect="snow"><span class="sw2">❄️</span>Snow</button><button class="op effect-option" data-effect="fireball"><span class="sw2">🔥</span>Fireball</button><button class="op effect-option" data-effect="hail"><span class="sw2">🧊</span>Hail</button><button class="op effect-option" data-effect="lightning"><span class="sw2">⚡</span>Lightning</button><button class="op effect-option" data-effect="storm"><span class="sw2">🌪️</span>Storm</button></div>
+<div class="pr"><span>Intensity</span><span style="font-size:.72rem;color:var(--mu)">Low · Medium · High</span></div><input type="range" id="fxIntensity" min="0" max="2" step="1" value="1" style="width:100%;accent-color:var(--vio)"></div></div>
+<div id="toast"></div>
+<div id="ov"></div>
+<aside id="dr" class="g"><div id="cb"><button id="x" class="g ib">✕</button><canvas id="cv"></canvas><small>Drag: rotate · Pinch/scroll: zoom</small></div><div id="info"></div></aside>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+// sym|name|mass|electronegativity|radius pm|ionization eV|melt K|boil K|density g/cm3|year|discoverer
+const D=`H|Hydrogen|1.008|2.20|53|13.6|14|20|0.00009|1766|Henry Cavendish
+He|Helium|4.0026||31|24.6|1|4.2|0.00018|1895|William Ramsay
+Li|Lithium|6.94|0.98|167|5.39|454|1615|0.534|1817|Johan Arfwedson
+Be|Beryllium|9.0122|1.57|112|9.32|1560|2742|1.85|1798|Louis Vauquelin
+B|Boron|10.81|2.04|87|8.30|2349|4200|2.34|1808|Humphry Davy
+C|Carbon|12.011|2.55|67|11.26|3800|4300|2.27|0|
+N|Nitrogen|14.007|3.04|56|14.53|63|77|0.00125|1772|Daniel Rutherford
+O|Oxygen|15.999|3.44|48|13.62|54|90|0.00143|1774|Joseph Priestley
+F|Fluorine|18.998|3.98|42|17.42|53|85|0.0017|1886|Henri Moissan
+Ne|Neon|20.180||38|21.56|25|27|0.0009|1898|Ramsay & Travers
+Na|Sodium|22.990|0.93|190|5.14|371|1156|0.97|1807|Humphry Davy
+Mg|Magnesium|24.305|1.31|145|7.65|923|1363|1.74|1755|Joseph Black
+Al|Aluminium|26.982|1.61|118|5.99|933|2792|2.70|1825|H. C. Ørsted
+Si|Silicon|28.085|1.90|111|8.15|1687|3538|2.33|1824|J. J. Berzelius
+P|Phosphorus|30.974|2.19|98|10.49|317|554|1.82|1669|Hennig Brand
+S|Sulfur|32.06|2.58|88|10.36|388|718|2.07|0|
+Cl|Chlorine|35.45|3.16|79|12.97|172|239|0.0032|1774|Carl Scheele
+Ar|Argon|39.948||71|15.76|84|87|0.0018|1894|Rayleigh & Ramsay
+K|Potassium|39.098|0.82|243|4.34|337|1032|0.86|1807|Humphry Davy
+Ca|Calcium|40.078|1.00|194|6.11|1115|1757|1.55|1808|Humphry Davy
+Sc|Scandium|44.956|1.36|184|6.56|1814|3109|2.99|1879|Lars Nilson
+Ti|Titanium|47.867|1.54|176|6.83|1941|3560|4.51|1791|William Gregor
+V|Vanadium|50.942|1.63|171|6.75|2183|3680|6.0|1801|Andrés del Río
+Cr|Chromium|51.996|1.66|166|6.77|2180|2944|7.15|1797|Louis Vauquelin
+Mn|Manganese|54.938|1.55|161|7.43|1519|2334|7.3|1774|Johan Gahn
+Fe|Iron|55.845|1.83|156|7.90|1811|3134|7.87|0|
+Co|Cobalt|58.933|1.88|152|7.88|1768|3200|8.86|1735|Georg Brandt
+Ni|Nickel|58.693|1.91|149|7.64|1728|3186|8.91|1751|Axel Cronstedt
+Cu|Copper|63.546|1.90|145|7.73|1358|2835|8.96|0|
+Zn|Zinc|65.38|1.65|142|9.39|693|1180|7.14|1746|Andreas Marggraf
+Ga|Gallium|69.723|1.81|136|6.00|303|2477|5.91|1875|Lecoq de Boisbaudran
+Ge|Germanium|72.630|2.01|125|7.90|1211|3106|5.32|1886|Clemens Winkler
+As|Arsenic|74.922|2.18|114|9.79|1090|1090|5.73|1250|Albertus Magnus
+Se|Selenium|78.971|2.55|103|9.75|494|958|4.81|1817|J. J. Berzelius
+Br|Bromine|79.904|2.96|94|11.81|266|332|3.12|1826|Antoine Balard
+Kr|Krypton|83.798|3.00|88|14.00|116|120|0.0037|1898|Ramsay & Travers
+Rb|Rubidium|85.468|0.82|265|4.18|312|961|1.53|1861|Bunsen & Kirchhoff
+Sr|Strontium|87.62|0.95|219|5.69|1050|1655|2.64|1790|Adair Crawford
+Y|Yttrium|88.906|1.22|212|6.22|1799|3609|4.47|1794|Johan Gadolin
+Zr|Zirconium|91.224|1.33|206|6.63|2128|4682|6.51|1789|Martin Klaproth
+Nb|Niobium|92.906|1.6|198|6.76|2750|5017|8.57|1801|Charles Hatchett
+Mo|Molybdenum|95.95|2.16|190|7.09|2896|4912|10.22|1778|Carl Scheele
+Tc|Technetium|98|1.9|183|7.28|2430|4538|11.5|1937|Perrier & Segrè
+Ru|Ruthenium|101.07|2.2|178|7.36|2607|4423|12.37|1844|Karl Claus
+Rh|Rhodium|102.91|2.28|173|7.46|2237|3968|12.41|1803|W. H. Wollaston
+Pd|Palladium|106.42|2.2|169|8.34|1828|3236|12.02|1803|W. H. Wollaston
+Ag|Silver|107.87|1.93|165|7.58|1235|2435|10.49|0|
+Cd|Cadmium|112.41|1.69|161|8.99|594|1040|8.65|1817|F. Stromeyer
+In|Indium|114.82|1.78|156|5.79|430|2345|7.31|1863|Reich & Richter
+Sn|Tin|118.71|1.96|145|7.34|505|2875|7.29|0|
+Sb|Antimony|121.76|2.05|133|8.61|904|1860|6.69|0|
+Te|Tellurium|127.60|2.1|123|9.01|723|1261|6.24|1782|F. von Reichenstein
+I|Iodine|126.90|2.66|115|10.45|387|457|4.93|1811|Bernard Courtois
+Xe|Xenon|131.29|2.6|108|12.13|161|165|0.0059|1898|Ramsay & Travers
+Cs|Caesium|132.91|0.79|298|3.89|302|944|1.93|1860|Bunsen & Kirchhoff
+Ba|Barium|137.33|0.89|253|5.21|1000|2170|3.51|1808|Humphry Davy
+La|Lanthanum|138.91|1.10|195|5.58|1193|3737|6.15|1839|Carl Mosander
+Ce|Cerium|140.12|1.12|185|5.54|1068|3716|6.77|1803|J. J. Berzelius
+Pr|Praseodymium|140.91|1.13|247|5.47|1208|3793|6.77|1885|von Welsbach
+Nd|Neodymium|144.24|1.14|206|5.53|1297|3347|7.01|1885|von Welsbach
+Pm|Promethium|145|1.13|205|5.58|1315|3273|7.26|1945|Marinsky et al.
+Sm|Samarium|150.36|1.17|238|5.64|1345|2067|7.52|1879|Lecoq de Boisbaudran
+Eu|Europium|151.96|1.2|231|5.67|1099|1802|5.24|1901|E. Demarçay
+Gd|Gadolinium|157.25|1.2|233|6.15|1585|3546|7.90|1880|de Marignac
+Tb|Terbium|158.93|1.1|225|5.86|1629|3503|8.23|1843|Carl Mosander
+Dy|Dysprosium|162.50|1.22|228|5.94|1680|2840|8.55|1886|Lecoq de Boisbaudran
+Ho|Holmium|164.93|1.23|226|6.02|1734|2993|8.79|1878|Jacques-Louis Soret
+Er|Erbium|167.26|1.24|226|6.11|1802|3141|9.07|1843|Carl Mosander
+Tm|Thulium|168.93|1.25|222|6.18|1818|2223|9.32|1879|Per Cleve
+Yb|Ytterbium|173.05|1.1|222|6.25|1097|1469|6.57|1878|de Marignac
+Lu|Lutetium|174.97|1.27|217|5.43|1925|3675|9.84|1907|Georges Urbain
+Hf|Hafnium|178.49|1.3|208|6.83|2506|4876|13.31|1923|Coster & Hevesy
+Ta|Tantalum|180.95|1.5|200|7.55|3290|5731|16.65|1802|Anders Ekeberg
+W|Tungsten|183.84|2.36|193|7.86|3695|5828|19.25|1783|de Elhuyar brothers
+Re|Rhenium|186.21|1.9|188|7.83|3459|5869|21.02|1925|Noddack & Tacke
+Os|Osmium|190.23|2.2|185|8.44|3306|5285|22.59|1803|Smithson Tennant
+Ir|Iridium|192.22|2.2|180|8.97|2719|4701|22.56|1803|Smithson Tennant
+Pt|Platinum|195.08|2.28|177|8.96|2041|4098|21.45|1735|Antonio de Ulloa
+Au|Gold|196.97|2.54|174|9.23|1337|3129|19.3|0|
+Hg|Mercury|200.59|2.00|171|10.44|234|630|13.53|0|
+Tl|Thallium|204.38|1.62|156|6.11|577|1746|11.85|1861|William Crookes
+Pb|Lead|207.2|2.33|154|7.42|601|2022|11.34|0|
+Bi|Bismuth|208.98|2.02|143|7.29|545|1837|9.78|1753|Claude Geoffroy
+Po|Polonium|209|2.0|135|8.41|527|1235|9.2|1898|Marie & Pierre Curie
+At|Astatine|210|2.2|127|9.3|575|610|7|1940|Corson et al.
+Rn|Radon|222|2.2|120|10.75|202|211|0.0097|1900|Friedrich Dorn
+Fr|Francium|223|0.7|348|4.07|300|950||1939|Marguerite Perey
+Ra|Radium|226|0.9|283|5.28|973|2010|5.5|1898|Marie & Pierre Curie
+Ac|Actinium|227|1.1|260|5.17|1323|3471|10.07|1899|André Debierne
+Th|Thorium|232.04|1.3|237|6.31|2023|5061|11.72|1829|J. J. Berzelius
+Pa|Protactinium|231.04|1.5|243|5.89|1841|4300|15.37|1913|Fajans & Göhring
+U|Uranium|238.03|1.38|240|6.19|1405|4404|19.1|1789|Martin Klaproth
+Np|Neptunium|237|1.36|221|6.27|917|4175|20.45|1940|McMillan & Abelson
+Pu|Plutonium|244|1.28|243|6.03|912|3505|19.82|1940|Glenn Seaborg et al.
+Am|Americium|243|1.3|244|5.97|1449|2880|12|1944|Seaborg et al.
+Cm|Curium|247|1.3|245|5.99|1613|3383|13.51|1944|Seaborg et al.
+Bk|Berkelium|247|1.3|244|6.2|1259|2900|14.78|1949|Seaborg et al.
+Cf|Californium|251|1.3|245|6.28|1173|1743|15.1|1950|Seaborg et al.
+Es|Einsteinium|252|1.3|245|6.42|1133||8.84|1952|Ghiorso et al.
+Fm|Fermium|257|1.3|245|6.50|1800|||1952|Ghiorso et al.
+Md|Mendelevium|258|1.3|246|6.58|1100|||1955|Ghiorso et al.
+No|Nobelium|259|1.3|246|6.65|1100|||1958|Ghiorso et al.
+Lr|Lawrencium|266|1.3|246|4.9|1900|||1961|Ghiorso et al.
+Rf|Rutherfordium|267|||||||1964|JINR Dubna
+Db|Dubnium|268|||||||1967|JINR Dubna
+Sg|Seaborgium|269|||||||1974|Berkeley / Dubna
+Bh|Bohrium|270|||||||1981|GSI Darmstadt
+Hs|Hassium|277|||||||1984|GSI Darmstadt
+Mt|Meitnerium|278|||||||1982|GSI Darmstadt
+Ds|Darmstadtium|281|||||||1994|GSI Darmstadt
+Rg|Roentgenium|282|||||||1994|GSI Darmstadt
+Cn|Copernicium|285|||||||1996|GSI Darmstadt
+Nh|Nihonium|286|||||||2004|RIKEN
+Fl|Flerovium|289|||||||1998|JINR Dubna
+Mc|Moscovium|290|||||||2003|JINR / LLNL
+Lv|Livermorium|293|||||||2000|JINR / LLNL
+Ts|Tennessine|294|||||||2010|JINR / ORNL
+Og|Oganesson|294|||||||2002|JINR / LLNL`;
+const E=D.split("\n").map((r,i)=>{const[s,n,m,en,rad,ie,mp,bp,rho,yr,by]=r.split("|");return{z:i+1,s,n,m,en,rad,ie,mp:mp?+mp:null,bp:bp?+bp:null,rho,yr:+yr,by}});
+const CATS=[["Alkali metal","#ff6b6b","3 11 19 37 55 87"],["Alkaline earth","#ffa94d","4 12 20 38 56 88"],["Transition metal","#ffd43b",""],["Post-transition","#69db7c","13 31 49 50 81 82 83 84 113 114 115 116"],["Metalloid","#38d9a9","5 14 32 33 51 52"],["Nonmetal","#4dabf7","1 6 7 8 15 16 34"],["Halogen","#748ffc","9 17 35 53 85 117"],["Noble gas","#da77f2","2 10 18 36 54 86 118"],["Lanthanide","#f783ac",""],["Actinide","#c0a062",""]];
+const cat=z=>z>=57&&z<=71?8:z>=89&&z<=103?9:CATS.findIndex(c=>(" "+c[2]+" ").includes(" "+z+" "))>=0?CATS.findIndex(c=>(" "+c[2]+" ").includes(" "+z+" ")):2;
+function pos(z){if(z==1)return[1,1];if(z==2)return[1,18];if(z<5)return[2,z-2];if(z<11)return[2,z+8];if(z<13)return[3,z-10];if(z<19)return[3,z];if(z<37)return[4,z-18];if(z<55)return[5,z-36];if(z<57)return[6,z-54];if(z<72)return[9,z-54];if(z<87)return[6,z-68];if(z<89)return[7,z-86];if(z<104)return[10,z-86];return[7,z-100]}
+const per=z=>z<3?1:z<11?2:z<19?3:z<37?4:z<55?5:z<87?6:7;
+const grp=z=>{const[r,c]=pos(z);return r>8?"—":c};
+const blk=z=>{const[r,c]=pos(z);return r>8?"f":(z==2||c<3)?"s":c>12?"p":"d"};
+const ORD="1s 2s 2p 3s 3p 4s 3d 4p 5s 4d 5p 6s 4f 5d 6p 7s 5f 6d 7p".split(" "),CAP={s:2,p:6,d:10,f:14};
+const EX={24:'4s1 3d5',29:'4s1 3d10',41:'5s1 4d4',42:'5s1 4d5',44:'5s1 4d7',45:'5s1 4d8',46:'5s0 4d10',47:'5s1 4d10',57:'4f0 5d1',58:'4f1 5d1',64:'4f7 5d1',78:'6s1 5d9',79:'6s1 5d10',89:'5f0 6d1',90:'5f0 6d2',91:'5f2 6d1',92:'5f3 6d1',93:'5f4 6d1',96:'5f7 6d1',103:'6d0 7p1'};
+function cfg(z){let n=z,o={};for(const s of ORD){const c=Math.min(n,CAP[s[1]]);o[s]=c;n-=c;if(!n)break}(EX[z]||"").split(" ").filter(Boolean).forEach(t=>o[t.slice(0,2)]=+t.slice(2));return o}
+const shells=z=>{const o=cfg(z),a=[];for(const k in o){const i=k[0]-1;a[i]=(a[i]||0)+o[k]}const r=a.map(v=>v||0);while(r.length&&!r[r.length-1])r.pop();return r};
+const cfgStr=z=>{const o=cfg(z);return ORD.filter(k=>o[k]).map(k=>k+"<sup>"+o[k]+"</sup>").join(" ")};
+const ph=(e,T)=>e.mp==null?3:T<e.mp?0:(e.bp==null||T<e.bp)?(T<e.mp?0:e.bp==null?1:1):2;
+const PN=["Solid","Liquid","Gas","Unknown"];
+const rad=z=>z==43||z==61||z>=84;
+const $=id=>document.getElementById(id),st={q:"",cat:null,st:null,T:298,K:true,snd:false};
+const grid=$("grid");
+E.forEach(e=>{const[r,c]=pos(e.z),k=cat(e.z);const b=document.createElement("button");b.className="t";b.style.cssText=`grid-row:${r};grid-column:${c};--c:${CATS[k][1]}`;
+b.innerHTML=`<i class="n">${e.z}</i><i class="p"></i><b>${e.s}</b><span class="nm">${e.n}</span><span class="ms">${e.m}</span><span class="mn"></span>`;b.onclick=()=>open(e);e.el=b;grid.append(b)});
+[[6,"57–71","#f783ac"],[7,"89–103","#c0a062"]].forEach(([r,t])=>{const d=document.createElement("div");d.className="ph";d.style.cssText=`grid-row:${r};grid-column:3`;d.textContent=t;grid.append(d)});
+CATS.forEach((c,i)=>{const b=document.createElement("button");b.className="chip";b.style.setProperty("--c",c[1]);b.innerHTML=`<i></i>${c[0]}`;b.onclick=()=>{st.cat=st.cat===i?null:i;b.parentNode.querySelectorAll(".chip").forEach((x,j)=>x.classList.toggle("on",st.cat===j));apply()};$("cats").append(b)});
+PN.forEach((n,i)=>{const b=document.createElement("button");b.className="chip";b.textContent=n;b.onclick=()=>{st.st=st.st===i?null:i;[...$("sts").querySelectorAll(".chip")].forEach((x,j)=>x.classList.toggle("on",st.st===j));apply()};$("sts").append(b)});
+$("sts").prepend(Object.assign(document.createElement("b"),{textContent:"State @ temperature:",style:"font-size:.75rem;margin-right:4px"}));
+function apply(){const q=st.q.trim().toLowerCase();E.forEach(e=>{const p=ph(e,st.T);e.el.querySelector(".p").className="p s"+p;
+const m=(!q||e.n.toLowerCase().includes(q)||e.s.toLowerCase()==q||e.s.toLowerCase().startsWith(q)||String(e.z)==q)&&(st.cat===null||cat(e.z)===st.cat)&&(st.st===null||p===st.st)&&(!st.fav||FAV.has(e.s));e.el.classList.toggle("dim",!m)});
+const T=st.T;$("tv").textContent=st.K?T+" K":Math.round(T-273.15)+" °C"}
+$("q").oninput=e=>{st.q=e.target.value;apply()};$("tr").oninput=e=>{st.T=+e.target.value;apply()};$("tu").onclick=()=>{st.K=!st.K;apply()};
+let ac;$("snd").onclick=()=>{st.snd=!st.snd;$("snd").textContent=st.snd?"🔊":"🔇";beep(660)};
+function beep(f){if(!st.snd)return;try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain();o.frequency.value=f;o.type="sine";g.gain.setValueAtTime(.08,ac.currentTime);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+.18);o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+.2)}catch(_){}}
+document.addEventListener("mouseover",e=>{if(e.target.closest&&e.target.closest(".t"))beep(880)});
+// ---------- Drawer ----------
+const kv=(a,b)=>`<div class="kv"><span>${a}</span><span>${b}</span></div>`,u=(v,s)=>v===""||v==null?"—":v+" "+s;
+function open(e){cur=e;try{history.replaceState(null,"","#"+e.s)}catch(_){}beep(520);const k=cat(e.z),c=CATS[k][1],K=x=>x==null?"—":x+" K ("+Math.round(x-273.15)+" °C)";
+const F=" 1 3 11 12 15 16 19 20 37 55 56 87 ",X=" 4 33 34 35 48 80 81 82 84 86 88 92 ",R=" 1 3 4 9 11 12 15 17 19 20 35 37 38 55 56 87 88 ";
+const h=(t,on)=>`<div class="${on?"a":""}">${t}</div>`;
+$("info").innerHTML=`<div class="hd" style="--c:${c}"><div class="big">${e.s}</div><div><h2>${e.n}</h2><p>#${e.z} · ${CATS[k][0]} · ${e.m} u</p></div></div>
+${actBox(e)}${trickBox(e)}
+<div class="sec g"><h3>Basic info</h3>${kv("Category",CATS[k][0])}${kv("Group",grp(e.z))}${kv("Period",per(e.z))}${kv("Block",blk(e.z)+"-block")}${kv("Phase at STP",PN[ph(e,293)])}${kv("Shells (K, L, M…)",shells(e.z).join(", "))}</div>
+<div class="sec g"><h3>Atomic properties</h3>${kv("Electron configuration",cfgStr(e.z))}${kv("Electronegativity",e.en||"—")}${kv("Atomic radius",u(e.rad,"pm"))}${kv("Ionization energy",u(e.ie,"eV"))}</div>
+<div class="sec g"><h3>Thermodynamics</h3>${kv("Melting point",K(e.mp))}${kv("Boiling point",K(e.bp))}${kv("Density",u(e.rho,"g/cm³"))}</div>
+<div class="sec g"><h3>History</h3>${kv("Discovered by",e.by||"Known since antiquity")}${kv("Year",e.yr?e.yr:"Ancient")}</div>
+<div class="sec g"><h3>Hazards</h3><div class="hz">${h("🔥 Flammable",F.includes(" "+e.z+" "))}${h("☠️ Toxic",X.includes(" "+e.z+" ")||rad(e.z))}${h("⚠️ Reactive",R.includes(" "+e.z+" "))}${h("☢️ Radioactive",rad(e.z))}</div></div>`;
+document.body.classList.add("open");setTimeout(()=>show3d(shells(e.z),c),60)}
+function close(){try{history.replaceState(null,"",location.pathname+location.search)}catch(_){}document.body.classList.remove("open");cancelAnimationFrame(raf);beep(400)}
+$("x").onclick=close;$("ov").onclick=close;addEventListener("keydown",e=>e.key==="Escape"&&close());
+// ---------- 3D ----------
+let R,S,C,G,els=[],raf,last=0;
+function glow(col){const c=document.createElement("canvas");c.width=c.height=128;const x=c.getContext("2d"),g=x.createRadialGradient(64,64,0,64,64,64);g.addColorStop(0,col);g.addColorStop(.3,col+"88");g.addColorStop(1,"#0000");x.fillStyle=g;x.fillRect(0,0,128,128);return new THREE.CanvasTexture(c)}
+function show3d(sh,col){const cv=$("cv"),w=cv.clientWidth,h=cv.clientHeight;R=R||new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true});R.setPixelRatio(Math.min(devicePixelRatio,2));R.setSize(w,h,false);
+S=new THREE.Scene();C=new THREE.PerspectiveCamera(50,w/h,.1,100);C.position.z=Math.max(6,sh.length*1.1+4);G=new THREE.Group();S.add(G);els=[];
+G.add(new THREE.Mesh(new THREE.SphereGeometry(.55,32,32),new THREE.MeshBasicMaterial({color:col})));
+const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:glow(col),blending:THREE.AdditiveBlending,transparent:true,depthWrite:false}));sp.scale.set(3.6,3.6,1);G.add(sp);
+sh.forEach((n,i)=>{const r=1.2+i*.7,p=new THREE.Group();p.rotation.set(i*.55+.3,i*.8,i*.3);G.add(p);
+p.add(new THREE.Mesh(new THREE.TorusGeometry(r,.012,8,128),new THREE.MeshBasicMaterial({color:0x8fa0ff,transparent:true,opacity:.45})));
+for(let k=0;k<n;k++){const m=new THREE.Mesh(new THREE.SphereGeometry(.075,12,12),new THREE.MeshBasicMaterial({color:0xffffff}));p.add(m);els.push({m,r,a:k/n*6.283,v:1.1/(1+i*.6)})}});
+cancelAnimationFrame(raf);last=performance.now();loop()}
+function loop(t){raf=requestAnimationFrame(loop);const d=((t||last)-last)/1000;last=t||last;els.forEach(o=>{o.a+=o.v*d;o.m.position.set(Math.cos(o.a)*o.r,Math.sin(o.a)*o.r,0)});if(!drag&&document.documentElement.dataset.reducedMotion!=="true")G.rotation.y+=d*.25;R.render(S,C)}
+let drag=false;const ptr=new Map();let pd=0;const cv=$("cv");
+cv.oncontextmenu=e=>e.preventDefault();
+cv.onpointerdown=e=>{cv.setPointerCapture(e.pointerId);ptr.set(e.pointerId,e);drag=true;pd=0};
+cv.onpointerup=cv.onpointercancel=e=>{ptr.delete(e.pointerId);drag=ptr.size>0;pd=0};
+cv.onpointermove=e=>{const p=ptr.get(e.pointerId);if(!p)return;const dx=e.clientX-p.clientX,dy=e.clientY-p.clientY;ptr.set(e.pointerId,e);
+if(ptr.size==2){const[a,b]=[...ptr.values()],d=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY);if(pd)C.position.z=Math.min(30,Math.max(3,C.position.z-(d-pd)*.03));pd=d}
+else if(e.shiftKey||e.buttons==2){const s=C.position.z*.0016;G.position.x+=dx*s;G.position.y-=dy*s}
+else{G.rotation.y+=dx*.01;G.rotation.x+=dy*.01}};
+cv.onwheel=e=>{e.preventDefault();C.position.z=Math.min(30,Math.max(3,C.position.z*(1+e.deltaY*.001)))};
+addEventListener("resize",()=>{if(!R||!document.body.classList.contains("open"))return;const w=cv.clientWidth,h=cv.clientHeight;R.setSize(w,h,false);C.aspect=w/h;C.updateProjectionMatrix()});
+
+// ================= TRICKS (mnemonics) =================
+const TR=[
+{k:'main',t:'(i) s-Block',rows:[['Group 1 · Alkali metals','H:Hey;Li:Li;Na:Na;K:Ki;Rb:Rab;Cs:Se;Fr:Fariyad'],['Group 2 · Alkaline earth metals','Be:Beta;Mg:Mange;Ca:Car;Sr:Scooter;Ba:Baap;Ra:Raji']]},
+{k:'main',t:'(ii) p-Block',rows:[['Group 13 · Boron family','B:Bangan;Al:Aalu;Ga:Gazar;In:in;Tl:Thaila'],['Group 14 · Carbon family','C:Ka;Si:Si;Ge:Gaye;Sn:Shankar;Pb:Prabhu'],['Group 15 · Nitrogen family','N:Nepal;P:Pakistan;As:Australia;Sb:Sab;Bi:Busy'],['Group 16 · Oxygen family','O:Old;S:Style;Se:Se;Te:Te;Po:Po'],['Group 17 · Halogens','F:Fir;Cl:Kal;Br:Bahar;I:Aai;At:Aatma'],['Group 18 · Noble gases','He:Hena;Ne:Nena;Ar:Aur;Kr:Karina Ke;Xe:X-ray;Rn:Rangeen']]},
+{k:'main',t:'(iii) d-Block · Left to Right',rows:[['3d series (Sc → Zn)','Sc:Science;Ti:Teri;V:Vah;Cr:Kare;Mn:Manav;Fe:Fir;Co:Kon;Ni:Nikale;Cu:Copper;Zn:Zinc'],['4d series (Y → Cd)','Y:Yari;Zr:Zara;Nb:Nibha;Mo:Mot;Tc:Tak;Ru:Rukavat;Rh:Rah me;Pd:Pade to;Ag:Aag me;Cd:Kud Ja'],['5d series (La, Hf → Hg)','La:La;Hf:Haf;Ta:ta;W:Varna;Re:Re;Os:Officer;Ir:Irani;Pt:Pitega;Au:Aur;Hg:Hasega']],note:'Hf + Ta ko jodo = “Hafta” 😄'},
+{k:'tb',t:'(iii) d-Block · Top to Bottom',rows:[['Group 3','Sc:Second;Y:Year;La:Layenge;Ac:Ac'],['Group 4','Ti:Tea;Zr:Zara;Hf:Half'],['Group 5','V:Ve;Nb:Navab;Ta:The'],['Group 6','Cr:Crore;Mo:Mol;W:Wala'],['Group 7','Mn:Man;Tc:Tak;Re:Rehja'],['Group 8','Fe:Fir;Ru:Rutha;Os:Officer'],['Group 9','Co:Kon;Rh:Rahega;Ir:Irregular'],['Group 10','Ni:Nahi;Pd:Padhoge;Pt:Pitoge'],['Group 11','Cu:Kyu;Ag:Aage;Au:Aaya'],['Group 12','Zn:Zinni;Cd:Canada;Hg:Hogi']]},
+{k:'main',t:'(iv) f-Block',rows:[['Lanthanides (Ce → Lu)','Ce:Sar;Pr:Par;Nd:Nadiya;Pm:Prem Ki;Sm:Samai;Eu:Yu;Gd:Gad Gad;Tb:Tab;Dy:Dil;Ho:Hua;Er:Aur;Tm:Tum Par;Yb:Yuhi;Lu:Lut Gaye'],['Actinides (Th → Lr)','Th:Tumhe;Pa:Pad;U:hau;Np:New Paper;Pu:Pura;Am:Aam;Cm:Kam;Bk:BiKey;Cf:Café mai;Es:Aise;Fm:Farmao;Md:Madam;No:Nasta;Lr:Lao']],note:'Pa + U ko jodo = “Padhau” 📖'},
+{k:'main',t:'7th Period (Rf → Og)',rows:[['Rf → Og','Rf:Ruder Ford;Db:Doob gaya;Sg:Sagar mai;Bh:Bhai;Hs:Has;Mt:Mat;Ds:Darma;Rg:Rog;Cn:Copper se;Nh:Nahi hoga;Fl:Flying;Mc:Mosquito;Lv:Living Room me;Ts:Tension;Og:Ohh God']]}
+];
+const MN={},MN2={};
+TR.forEach(b=>b.rows.forEach(r=>r[1].split(';').forEach(x=>{const i=x.indexOf(':'),sy=x.slice(0,i),w=x.slice(i+1);(b.k=='tb'?MN2:MN)[sy]=w})));
+const bySym={};E.forEach(e=>bySym[e.s]=e);
+let tmode='lr';
+const mnOf=e=>(tmode=='tb'&&MN2[e.s])||MN[e.s]||MN2[e.s]||'';
+function trickBox(e){const a=MN[e.s],b=MN2[e.s];if(!a&&!b)return'';
+let h='<div class="sec g trk"><h3>🧠 Yaad karne ka trick</h3>';
+if(a)h+=`<div class="w">${a}<small>${e.s} = ${a}</small></div>`;
+if(b&&b!==a)h+=`<div class="w" style="margin-top:8px">${b}<small>Top-to-Bottom trick (d-block)</small></div>`;
+else if(b&&!a)h+=`<div class="w">${b}<small>Top-to-Bottom trick</small></div>`;
+return h+'</div>'}
+function paintTiles(){E.forEach(e=>{e.el.querySelector('.mn').textContent=mnOf(e)})}
+paintTiles();
+$('tmb').onclick=()=>{const on=$('tmb').classList.toggle('on');document.body.classList.toggle('tm',on);$('tmm').style.display=on?'':'none'};
+$('tmm').onclick=()=>{tmode=tmode=='lr'?'tb':'lr';$('tmm').textContent='d-block: '+(tmode=='lr'?'L→R':'T→B');paintTiles()};
+const hue=e=>CATS[cat(e.z)][1];
+function chipsHTML(str){return str.split(';').map(x=>{const i=x.indexOf(':'),sy=x.slice(0,i),w=x.slice(i+1),e=bySym[sy];return`<button class="tc" style="--c:${hue(e)}" data-s="${sy}"><b>${sy}</b><em>${w}</em></button>`}).join('')}
+const sentOf=str=>str.split(';').map(x=>x.slice(x.indexOf(':')+1)).join(' ');
+let h='<div class="hero g"><h2>🧠 Periodic Table Tricks</h2><p>Har element ke liye ek chhota, funny word. Symbol ko word se jodo — bas ek baar bolo, yaad ho jayega! Kisi bhi box par tap karo to us element ki full detail khulegi.</p></div>';
+h+='<div class="blk g"><div class="pill">⭐ Basic Tricks · Pehle ye yaad karo</div>'+
+'<div class="facts"><div class="fc"><b>118</b><span>Total elements</span></div><div class="fc"><b>7</b><span>Periods (rows)</span></div><div class="fc"><b>18</b><span>Groups (columns)</span></div><div class="fc"><b>4</b><span>Blocks: s · p · d · f</span></div></div>'+
+'<div class="sub">Block kitne groups / elements ka?</div><div class="tr"><span>s-block</span><span>Group 1–2 (+He)</span></div><div class="tr"><span>p-block</span><span>Group 13–18</span></div><div class="tr"><span>d-block</span><span>Group 3–12 (Transition)</span></div><div class="tr"><span>f-block</span><span>Lanthanides + Actinides (14 + 14)</span></div>'+
+'<div class="sub">Pehle 20 elements</div><div class="chips">'+chipsHTML('H:H;He:He;Li:Li;Be:Be;B:B;C:C;N:N;O:O;F:F;Ne:Ne;Na:Na;Mg:Mg;Al:Al;Si:Si;P:P;S:S;Cl:Cl;Ar:Ar;K:K;Ca:Ca')+'</div>'+
+'<div class="sent"><b>H → Ne:</b> Happy Henry Likes Beer But Could Not Obtain Food Nearby<br><b>Na → Ca:</b> Nobody Mixes A Silly Pink Shirt Clever Arranging Kind Cats</div>'+
+'<div class="sub">Important groups</div>'+
+'<div class="tr"><span>Alkali metals (Gp 1)</span><span>Li Na K Rb Cs Fr</span></div><div class="tr"><span>Alkaline earth (Gp 2)</span><span>Be Mg Ca Sr Ba Ra</span></div><div class="tr"><span>Halogens (Gp 17)</span><span>F Cl Br I At</span></div><div class="tr"><span>Noble gases (Gp 18)</span><span>He Ne Ar Kr Xe Rn</span></div>'+
+'<div class="sub">Trends ek nazar mein</div>'+
+'<div class="tr"><span>Atomic size</span><span>Period me → ↓ · Group me ↓ ↑</span></div><div class="tr"><span>Ionisation energy</span><span>Period me → ↑ · Group me ↓ ↓</span></div><div class="tr"><span>Electronegativity</span><span>Period me → ↑ · Group me ↓ ↓</span></div><div class="tr"><span>Metallic character</span><span>Period me → ↓ · Group me ↓ ↑</span></div>'+
+'<div class="note">Basic tricks section CodexStudys ne add kiya hai — baaki saare tricks PW mnemonics PDF ke hisaab se.</div></div>';
+TR.forEach(b=>{h+=`<div class="blk g"><div class="pill">${b.t}</div>`;
+b.rows.forEach(r=>{h+=`<div class="sub">${r[0]}</div><div class="chips">${chipsHTML(r[1])}</div><div class="sent">${sentOf(r[1])}</div>`});
+if(b.note)h+=`<div class="note">💡 ${b.note}</div>`;h+='</div>'});
+$('tk').innerHTML=h;
+$('tk').onclick=ev=>{const b=ev.target.closest('.tc');if(b)open(bySym[b.dataset.s])};
+// tabs
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x==t));document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on',v.id==t.dataset.v));if(t.dataset.v=='vq')quiz();scrollTo(0,0)});
+// ================= QUIZ v2 · NEET / JEE level =================
+const qSh=a=>[...a].sort(()=>Math.random()-.5),qPk=a=>a[Math.floor(Math.random()*a.length)];
+const SUPM={'0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹','+':'⁺','-':'⁻'};
+const sup=s=>String(s).split('').map(c=>SUPM[c]||c).join('');
+const ionS=(s,c)=>s+sup((Math.abs(c)>1?Math.abs(c):'')+(c>0?'+':'-'));
+const COM=[];for(let i=1;i<=36;i++)COM.push(i);COM.push(37,38,47,50,53,54,55,56,78,79,80,82,86,87,88,92);
+const qE=z=>E[z-1],num=(e,k)=>e[k]===''||e[k]==null?NaN:+e[k],NOB=[2,10,18,36,54,86],ORB={s:1,p:3,d:5,f:7};
+const TOP={t:'Trends',c:'Config',i:'d-block & Ions',f:'Facts',p:'Concepts',k:'Tricks'};
+function mk(q,c,w,e,t,l){c=String(c);const ws=[...new Set(w.map(String))].filter(x=>x!==c);if(ws.length<3)return null;const o=qSh([c,...qSh(ws).slice(0,3)]);return{q,o,a:o.indexOf(c),e,t,l}}
+function cfgO(z,ex){let n=z,o={};for(const s of ORD){const c=Math.min(n,CAP[s[1]]);o[s]=c;n-=c;if(!n)break}if(ex)(EX[z]||'').split(' ').filter(Boolean).forEach(t=>o[t.slice(0,2)]=+t.slice(2));return o}
+function cfgC(z,ex){const nz=[...NOB].reverse().find(x=>x<z),o=cfgO(z,ex),f=ks=>ORD.filter(k=>o[k]&&!ks.includes(k)).map(k=>k+sup(o[k])).join(' ');if(!nz)return f([]);return'['+qE(nz).s+'] '+f(Object.keys(cfgO(nz,0)))}
+const unp=z=>{const o=cfgO(z,1);let u=0;for(const k in o){const m=ORB[k[1]],c=o[k];u+=c<=m?c:2*m-c}return u};
+const GEN=[],reg=(m,f)=>GEN.push({m,f});
+// ---- data-driven generators (any table value can come) ----
+const PR=[['en','electronegativity (Pauling)',''],['rad','atomic radius',' pm'],['ie','1st ionisation energy',' eV'],['mp','melting point',' K'],['bp','boiling point',' K'],['rho','density',' g/cm³']];
+reg('t',()=>{const[k,nm,un]=qPk(PR),hi=Math.random()<.5;const pool=COM.map(qE).filter(e=>!isNaN(num(e,k))&&!(k=='en'&&NOB.includes(e.z))&&!(k=='bp'&&e.mp==e.bp));const f=qSh(pool).slice(0,4),v=f.map(e=>num(e,k)).sort((a,b)=>hi?b-a:a-b);if(Math.abs(v[0]-v[1])/Math.max(v[0],v[1])<.06)return null;const best=f.find(e=>num(e,k)==v[0]);
+return mk(`Which has the ${hi?'highest':'lowest'} ${nm} among these?`,best.n,f.map(e=>e.n),`${nm}: `+f.map(e=>`${e.s} ${e[k]}${un}`).join(' · '),'Trends',k=='en'?1:2)});
+reg('f',()=>{const e=qE(qPk(COM)),r=Math.random();if(r<.25)return mk(`Element with atomic number ${e.z} is`,e.n,qSh(COM).slice(0,6).map(z=>qE(z).n),`Z = ${e.z} → ${e.n} (${e.s}).`,'Facts',1);
+if(r<.5)return mk(`Atomic number of ${e.n} is`,e.z,[e.z-1,e.z+1,e.z+2,e.z-2,e.z+10].filter(x=>x>0),`${e.n} (${e.s}) has Z = ${e.z}.`,'Facts',1);
+if(r<.8){const g=grp(e.z),p=per(e.z);if(g=='—')return null;return mk(`${e.n} (Z = ${e.z}) is placed in`,`Group ${g}, Period ${p}`,[`Group ${g+1>18?g-1:g+1}, Period ${p}`,`Group ${g}, Period ${p+1>7?p-1:p+1}`,`Group ${g-1<1?g+2:g-1}, Period ${p}`,`Group ${g}, Period ${p-1<1?p+2:p-1}`,`Group ${g+2>18?g-2:g+2}, Period ${p}`],`Z = ${e.z}: period ${p}, group ${g}, ${blk(e.z)}-block, config ${cfgC(e.z,1)}.`,'Facts',1)}
+const b=blk(e.z);return mk(`${e.n} (Z = ${e.z}) belongs to which block?`,b+'-block',['s-block','p-block','d-block','f-block'],`${cfgC(e.z,1)} → last electron enters ${b}-subshell.`,'Config',1)});
+reg('f',()=>{const g=qPk([1,2,13,14,15,16,17,18,3,6,8,11,12]),p=qPk([2,3,4,5,6]),x=E.find(e=>per(e.z)==p&&grp(e.z)===g);if(!x)return null;return mk(`The element in Period ${p}, Group ${g} is`,x.n,qSh(COM).slice(0,7).map(z=>qE(z).n),`Period ${p} / Group ${g} = ${x.n} (${x.s}, Z = ${x.z}).`,'Facts',2)});
+reg('c',()=>{const z=Math.random()<.45?qPk([24,29,41,42,46,47,78,79]):qPk(COM.filter(x=>x>=11&&x<=36)),e=qE(z),c=cfgC(z,1),w=[cfgC(z,0),cfgC(z-1,1),cfgC(z+1,1),cfgC(z+2,1),cfgC(z-2,1)];
+return mk(`Ground-state electronic configuration of ${e.n} (Z = ${z}) is`,c,w,EX[z]?`⚠ Exception! ${e.s} = ${c} (half-/fully-filled stability). Normal Aufbau would give ${cfgC(z,0)}.`:`Fill by Aufbau / (n+l) order: ${c}.`,'Config',EX[z]?3:2)});
+reg('c',()=>{const z=qPk(COM.filter(x=>x>=3&&x<=36)),e=qE(z),u=unp(z);return mk(`Number of unpaired electrons in a ground-state ${e.n} atom (Z = ${z})`,u,[0,1,2,3,4,5,6],`${cfgC(z,1)} → apply Hund's rule → ${u} unpaired.`,'Config',z<=20?1:2)});
+reg('c',()=>{const z=qPk(COM.filter(x=>[1,2,13,14,15,16,17,18].includes(grp(x))&&x>2)),e=qE(z),g=grp(z),v=g<=2?g:g-10;return mk(`Number of valence electrons in ${e.n} (Z = ${z})`,v,[1,2,3,4,5,6,7,8],`${e.s} is in group ${g} → ${v} valence electron(s).`,'Config',1)});
+reg('c',()=>{const n=qPk([2,3,4,5,6]),l=qPk([0,1,2,3].filter(x=>x<n)),L='spdf'[l],r=Math.random();if(r<.6)return mk(`Number of radial (spherical) nodes in ${n}${L} orbital`,n-l-1,[0,1,2,3,4],`Radial nodes = n − l − 1 = ${n} − ${l} − 1 = ${n-l-1}.`,'Config',2);return mk(`Total number of nodes (radial + angular) in ${n}${L} orbital`,n-1,[0,1,2,3,4,5],`Total nodes = n − 1 = ${n-1} (radial ${n-l-1} + angular ${l}).`,'Config',3)});
+const ISO=[['N',-3],['O',-2],['F',-1],['Na',1],['Mg',2],['Al',3],['P',-3],['S',-2],['Cl',-1],['K',1],['Ca',2],['Sc',3],['Br',-1],['Rb',1],['Sr',2],['Li',1],['Be',2]];
+reg('i',()=>{const t=qPk([10,18,36]),nb=E.find(e=>e.z==t),ok=ISO.filter(([s,c])=>bySym[s].z-c==t),no=ISO.filter(([s,c])=>bySym[s].z-c!=t);if(!ok.length)return null;const[s,c]=qPk(ok);return mk(`Which species is isoelectronic with ${nb.n} (${nb.s})?`,ionS(s,c),no.map(([a,b])=>ionS(a,b)),`${nb.s} has ${t} e⁻. ${ionS(s,c)}: ${bySym[s].z} ${c>0?'−':'+'} ${Math.abs(c)} = ${t} e⁻.`,'d-block & Ions',2)});
+const DN={'Sc³⁺':0,'Ti³⁺':1,'V³⁺':2,'Cr³⁺':3,'Cr²⁺':4,'Mn³⁺':4,'Mn²⁺':5,'Fe³⁺':5,'Fe²⁺':6,'Co²⁺':7,'Co³⁺':6,'Ni²⁺':8,'Cu²⁺':9,'Cu⁺':10,'Zn²⁺':10},MU=[0,1.73,2.83,3.87,4.9,5.92];
+reg('i',()=>{const k=qPk(Object.keys(DN)),d=DN[k],u=d<=5?d:10-d,r=Math.random();if(r<.5)return mk(`Number of unpaired electrons in ${k} (weak-field, d${sup(d)})`,u,[0,1,2,3,4,5],`${k} = d${sup(d)} → ${u} unpaired electron(s).`,'d-block & Ions',2);
+return mk(`Spin-only magnetic moment of ${k} (BM) is`,MU[u].toFixed(2),MU.map(x=>x.toFixed(2)),`${k}: d${sup(d)} → n = ${u}; μ = √(n(n+2)) = ${MU[u].toFixed(2)} BM.`,'d-block & Ions',3)});
+const FL={Li:'Crimson red',Na:'Golden yellow',K:'Lilac (violet)',Rb:'Red-violet',Cs:'Blue',Ca:'Brick red',Sr:'Crimson red',Ba:'Apple green'};
+reg('f',()=>{const s=qPk(Object.keys(FL));return mk(`Characteristic flame colour of ${bySym[s].n}`,FL[s],['Crimson red','Golden yellow','Lilac (violet)','Red-violet','Blue','Brick red','Apple green'],`Flame test: Li crimson · Na golden yellow · K lilac · Rb red-violet · Cs blue · Ca brick red · Sr crimson · Ba apple green.`,'Facts',1)});
+reg('f',()=>{const e=qE(qPk(COM.filter(z=>E[z-1].by&&E[z-1].by.length>3))),tk=s=>s.split(/[^A-Za-zÀ-ž]+/).filter(x=>x.length>3),m=tk(e.by);const w=[...new Set(COM.map(z=>qE(z).by).filter(b=>b&&!tk(b).some(x=>m.includes(x))))];return mk(`${e.n} (${e.s}) was discovered by`,e.by,w,`${e.n}: ${e.by}, ${e.yr}.`,'Facts',1)});
+reg('f',()=>{const L=E.filter(e=>ph(e,298)==1),G=E.filter(e=>ph(e,298)==2&&COM.includes(e.z)),S=COM.map(qE).filter(e=>ph(e,298)==0&&![31,55,87].includes(e.z));if(Math.random()<.5){const c=qPk(L);return mk('Which of these is a liquid at room temperature (298 K)?',c.n,S.map(e=>e.n).concat(G.map(e=>e.n)),`Only Hg (metal) and Br₂ (non-metal) are liquid at 25 °C; Ga, Cs, Fr melt just above (≈30 °C).`,'Facts',1)}
+const c=qPk(G);return mk('Which of these is a gas at room temperature (298 K)?',c.n,S.map(e=>e.n),`Gases at 298 K: H, He, N, O, F, Ne, Cl, Ar, Kr, Xe, Rn.`,'Facts',1)});
+reg('f',()=>{const p=qPk([1,2,3,4,5,6,7]),n=E.filter(e=>per(e.z)==p).length;return mk(`How many elements are there in Period ${p} of the modern table?`,n,[2,8,18,32,36,10,6].filter(x=>x!=n),`Period lengths: 2, 8, 8, 18, 18, 32, 32.`,'Facts',1)});
+reg('f',()=>{const C=[[0,'an alkali metal'],[1,'an alkaline earth metal'],[6,'a halogen'],[7,'a noble gas'],[4,'a metalloid']],[c,lb]=qPk(C),m=qSh(E.filter(e=>cat(e.z)==c&&COM.includes(e.z)&&e.z<87)).slice(0,3),x=qPk(COM.map(qE).filter(e=>cat(e.z)!=c&&e.z!=1));if(m.length<3)return null;return mk(`Which of the following is NOT ${lb}?`,x.n,m.map(e=>e.n),`${x.n} (${x.s}) is ${CATS[cat(x.z)][0].toLowerCase()}; the other three are ${lb.replace(/^an? /,'')}s.`,'Facts',1)});
+// ---- trick generators ----
+const MK=Object.keys(MN),WC={};MK.forEach(k=>WC[MN[k]]=(WC[MN[k]]||0)+1);const UK=()=>{const u=MK.filter(k=>WC[MN[k]]==1);return qPk(u)};
+reg('k',()=>{const k=UK();return mk(`Trick word “${MN[k]}” stands for which symbol?`,k,qSh(MK).slice(0,8),`${MN[k]} = ${k} (${bySym[k].n}, Z = ${bySym[k].z}).`,'Tricks',1)});
+reg('k',()=>{const k=qPk(MK);return mk(`Which trick word is used for ${bySym[k].n} (${k})?`,MN[k],qSh(MK).slice(0,8).map(x=>MN[x]),`${k} → “${MN[k]}”.`,'Tricks',1)});
+reg('k',()=>{const k=UK();return mk(`Trick “${MN[k]}” refers to which element?`,bySym[k].n,qSh(MK).slice(0,8).map(x=>bySym[x].n),`${MN[k]} = ${bySym[k].n} (${k}).`,'Tricks',1)});
+// ---- hand-made NEET / JEE concept bank: [mode, level, question, correct, w1, w2, w3, explanation] ----
+const CQ=[
+['t',1,"Which element has the highest first ionisation enthalpy?","Helium","Neon","Fluorine","Hydrogen","He: smallest size + stable 1s². IE₁ ≈ 24.6 eV, the highest of all elements."],
+['t',1,"Which element has the highest electronegativity (Pauling scale)?","Fluorine","Oxygen","Chlorine","Neon","F = 3.98. Small size + 7 valence e⁻. Noble gases are not assigned values."],
+['t',2,"Which halogen has the most negative electron gain enthalpy?","Chlorine","Fluorine","Bromine","Iodine","F is so small that e⁻–e⁻ repulsion lowers its ΔegH. Order: Cl > F > Br > I."],
+['t',2,"The correct increasing order of IE₁ in the 2nd period is","Li < B < Be < C < O < N < F < Ne","Li < Be < B < C < N < O < F < Ne","Li < B < Be < C < N < O < F < Ne","Li < Be < B < C < O < N < F < Ne","Two dips: Be (2s² full) > B and N (2p³ half-filled) > O. Trick: Be & N are extra stable."],
+['t',2,"The correct order of IE₁ for Na, Mg, Al, Si is","Na < Al < Mg < Si","Na < Mg < Al < Si","Al < Na < Mg < Si","Na < Al < Si < Mg","Mg (3s² full) > Al (3p¹), same pattern as Be > B."],
+['t',2,"Which of Na, Mg, Al, Ca has the highest second ionisation enthalpy?","Na","Mg","Al","Ca","Na⁺ has the stable noble-gas core (2p⁶); removing a 2nd e⁻ breaks it."],
+['t',1,"Which ion has the smallest radius?","Al³⁺","Mg²⁺","Na⁺","F⁻","Isoelectronic (10 e⁻): larger nuclear charge → smaller size. N³⁻ > O²⁻ > F⁻ > Na⁺ > Mg²⁺ > Al³⁺."],
+['t',2,"Which is the largest among N³⁻, O²⁻, F⁻ and Na⁺?","N³⁻","O²⁻","F⁻","Na⁺","All have 10 e⁻; N has the lowest Z (7) so its electron cloud is the least pulled in."],
+['t',2,"Zr and Hf have almost the same radius (≈160 pm) because of","Lanthanoid contraction","Inert pair effect","Diagonal relationship","Screening by d-electrons","Poor shielding by 4f electrons raises Z_eff, shrinking 5d elements to the size of 4d ones (Zr–Hf, Nb–Ta, Mo–W)."],
+['t',1,"On moving down a group, metallic character ___ and electronegativity ___","increases; decreases","decreases; increases","increases; increases","decreases; decreases","Bigger atoms lose e⁻ more easily and attract bonded e⁻ less."],
+['t',3,"The correct order of electron-gain enthalpy (magnitude) for O, S, Se, Te is","S > Se > Te > O","O > S > Se > Te","S > O > Se > Te","Te > Se > S > O","O is anomalous (small 2p cloud, strong repulsion). S (−200) > Se (−195) > Te (−190) > O (−141) kJ/mol."],
+['t',2,"The highest bond dissociation enthalpy among halogens belongs to","Cl₂","F₂","Br₂","I₂","F₂ is weak due to lone-pair repulsion. Order: Cl₂ > Br₂ > F₂ > I₂."],
+['t',1,"The strongest acid among HF, HCl, HBr, HI is","HI","HF","HCl","HBr","H–X bond weakens down the group, so HI releases H⁺ most easily."],
+['t',1,"Which hydrogen halide has the highest boiling point?","HF","HCl","HBr","HI","Hydrogen bonding in HF. Order: HF > HI > HBr > HCl."],
+['t',3,"Slater’s rules: effective nuclear charge (Z*) on the 3s electron of Na is","2.20","1.00","2.85","8.80","σ = 8(0.85) + 2(1.00) = 8.8; Z* = 11 − 8.8 = 2.2."],
+['t',3,"Slater’s rules: Z* felt by a 3p electron of chlorine (Z = 17) is","6.10","7.00","3.25","10.90","σ = 6(0.35) + 8(0.85) + 2(1.00) = 10.9; Z* = 17 − 10.9 = 6.1."],
+['c',1,"“No two electrons in an atom can have the same four quantum numbers” is the statement of","Pauli exclusion principle","Hund’s rule","Aufbau principle","Heisenberg’s principle","So an orbital holds at most 2 e⁻ with opposite spins."],
+['c',1,"Maximum number of electrons in a shell with principal quantum number n is","2n²","n²","2n","2(2l + 1)","n² orbitals × 2 e⁻ each."],
+['c',2,"Which set of quantum numbers is NOT possible?","n = 3, l = 3, m = 0","n = 3, l = 2, m = −2","n = 2, l = 1, m = 0","n = 4, l = 0, m = 0","l runs from 0 to n − 1. For n = 3, l = 3 would be a 3f orbital which doesn’t exist."],
+['c',1,"According to the (n + l) rule, which orbital is filled first?","4s","3d","4p","5s","4s: n + l = 4; 3d, 4p, 5s: 5."],
+['c',2,"Electronic configuration of Cu²⁺ (Z = 29) is","[Ar] 3d⁹","[Ar] 3d⁸ 4s¹","[Ar] 3d⁷ 4s²","[Ar] 3d¹⁰","Cu = 3d¹⁰4s¹; electrons leave 4s first, then 3d. Cu²⁺: 1 unpaired e⁻ → coloured, paramagnetic."],
+['c',2,"A species has a spin-only magnetic moment of 5.92 BM. The number of unpaired electrons is","5","4","3","6","μ = √(n(n+2)) → √35 = 5.92 BM (Mn²⁺, Fe³⁺: d⁵)."],
+['c',2,"Half-filled and fully-filled subshells are extra stable due to","Symmetry and higher exchange energy","Larger nuclear charge","Lower shielding only","Aufbau principle","Maximum exchange between same-spin electrons + symmetrical distribution."],
+['i',1,"Which ion is colourless in aqueous solution?","Zn²⁺","Cu²⁺","Fe³⁺","Ni²⁺","d¹⁰ (and d⁰) ions have no d–d transitions: Zn²⁺, Cu⁺, Sc³⁺, Ti⁴⁺ are colourless."],
+['i',1,"Which of the following is NOT a typical transition element?","Zn","Fe","Ni","Cr","Zn has d¹⁰ in both atom and Zn²⁺ ion (like Cd, Hg), so by IUPAC definition it is not a transition metal."],
+['i',2,"The highest oxidation state shown by a 3d-series element is","+7 (Mn)","+8 (Fe)","+6 (Cr)","+5 (V)","Mn: 3d⁵4s² → +7 (KMnO₄). +8 is reached only by Ru and Os (RuO₄, OsO₄)."],
+['i',2,"Which 3d element shows the maximum number of oxidation states?","Mn","Fe","Cr","Cu","Mn shows +2 to +7."],
+['i',2,"Which metal has the highest melting point?","Tungsten","Osmium","Platinum","Iridium","W ≈ 3695 K, the highest among metals (carbon is highest overall)."],
+['i',1,"Which metal is liquid at 25 °C?","Mercury","Gallium","Caesium","Tin","Hg (mp 234 K). Ga and Cs melt at ≈ 30 °C so they are solid at 25 °C."],
+['i',3,"Which pair has almost identical atomic radii due to lanthanoid contraction?","Zr and Hf","Ti and Zr","Cu and Ag","Fe and Ru","Zr (160 pm) & Hf (159 pm)."],
+['i',2,"Which element has the highest IE₁ in the 3d series (Sc–Zn)?","Zn","Cu","Sc","Mn","Zn: 3d¹⁰4s² fully filled → 9.39 eV."],
+['i',2,"Which ion is paramagnetic?","Ti³⁺","Zn²⁺","Cu⁺","Sc³⁺","Ti³⁺ is d¹ (1 unpaired e⁻). Zn²⁺, Cu⁺ are d¹⁰ and Sc³⁺ is d⁰ — all diamagnetic."],
+['i',3,"The spin-only magnetic moment of Ni²⁺ (d⁸) is closest to","2.83 BM","1.73 BM","3.87 BM","4.90 BM","n = 2 → √(2×4) = 2.83 BM."],
+['i',3,"Which lanthanoid commonly shows the +4 state in aqueous solution?","Ce","Gd","La","Lu","Ce⁴⁺ attains the noble-gas config [Xe]."],
+['i',3,"Eu²⁺ and Yb²⁺ are stable because they have","Half-filled (4f⁷) / completely filled (4f¹⁴) subshell","Lanthanoid contraction","Inert pair effect","Larger size","Eu²⁺ = 4f⁷, Yb²⁺ = 4f¹⁴."],
+['i',2,"Actinoids show a wider range of oxidation states than lanthanoids because","5f, 6d and 7s orbitals have comparable energies","They are radioactive","4f is deeply buried","5f electrons are poorly shielded","Comparable energies allow more electrons to take part in bonding."],
+['i',1,"How many elements are there in the lanthanoid (4f) series, Ce to Lu?","14","15","13","16","4f holds 14 electrons (Z = 58–71)."],
+['f',1,"The Law of Triads was proposed by","Döbereiner","Newlands","Mendeleev","Moseley","Newlands: Law of Octaves. Mendeleev: periodic law on atomic mass. Moseley: atomic number."],
+['f',1,"The modern periodic law says properties of elements are periodic functions of their","Atomic number","Atomic mass","Atomic volume","Number of neutrons","Moseley’s X-ray work (1913)."],
+['f',1,"Mendeleev’s eka-silicon is now called","Germanium","Gallium","Scandium","Tin","Eka-boron = Sc, eka-aluminium = Ga, eka-silicon = Ge."],
+['f',1,"Group 16 elements are collectively called","Chalcogens","Pnictogens","Halogens","Alkaline earths","Chalcogens = O, S, Se, Te, Po. Group 15 = pnictogens."],
+['f',1,"Coinage metals (Cu, Ag, Au) belong to group","11","10","12","9","Group 11."],
+['f',1,"The symbol Sb for antimony comes from the Latin word","Stibium","Stannum","Plumbum","Argentum","Sn = Stannum, Pb = Plumbum, Ag = Argentum, Au = Aurum, Hg = Hydrargyrum, Fe = Ferrum, W = Wolfram."],
+['f',1,"Which symbol–Latin name pair is correct?","Pb – Plumbum","Sn – Stibium","Ag – Aurum","Hg – Ferrum","Sn = Stannum, Sb = Stibium, Au = Aurum, Ag = Argentum, Hg = Hydrargyrum, Fe = Ferrum."],
+['f',1,"Which element is named after a scientist?","Einsteinium (Es)","Americium (Am)","Francium (Fr)","Californium (Cf)","Also: Fm Fermi, Md Mendeleev, No Nobel, Cm Curies, Bh Bohr, Mt Meitner, Og Oganessian."],
+['f',2,"The temporary IUPAC name of element 119 is","Ununennium (Uue)","Unbiunium (Ubu)","Ununoctium (Uuo)","Unbinilium (Ubn)","Roots: 0 nil, 1 un, 2 bi, 3 tri, 4 quad, 5 pent, 6 hex, 7 sept, 8 oct, 9 enn. 1-1-9 → un-un-enn-ium."],
+['f',2,"The first artificially prepared element was","Technetium","Promethium","Neptunium","Astatine","Tc (Z = 43), 1937. Tc and Pm are the two elements below Bi with no stable isotope."],
+['f',1,"Which noble gas is radioactive?","Radon","Xenon","Krypton","Argon","Rn (Z = 86) has no stable isotope."],
+['f',1,"Which noble gas is most abundant in the atmosphere?","Argon","Neon","Helium","Xenon","Ar ≈ 0.93% by volume."],
+['f',2,"The first noble-gas compound prepared by Neil Bartlett was","XePtF₆","XeF₆","KrF₂","XeO₃","Bartlett noticed IE(Xe) ≈ IE(O₂), and PtF₆ oxidises O₂, so he tried Xe (1962)."],
+['f',1,"The most abundant metal in the Earth’s crust is","Aluminium","Iron","Calcium","Sodium","Al ≈ 8%. Most abundant element overall: oxygen."],
+['f',1,"Which element has the lowest boiling point (≈ 4.2 K)?","Helium","Hydrogen","Neon","Nitrogen","Weakest van der Waals forces."],
+['f',2,"The densest element (natural) is","Osmium","Iridium","Platinum","Gold","Os = 22.59 g/cm³, just above Ir = 22.56."],
+['f',1,"The lightest metal is","Lithium","Sodium","Beryllium","Aluminium","Li, ρ = 0.534 g/cm³."],
+['f',1,"Which alkali-metal ion has the lowest mobility in water?","Li⁺","Na⁺","K⁺","Cs⁺","Li⁺ is the most hydrated (largest hydrated radius)."],
+['f',2,"The strongest reducing agent among alkali metals in aqueous solution is","Lithium","Caesium","Sodium","Potassium","Li has the highest hydration enthalpy → most negative E° (−3.05 V)."],
+['f',1,"A dilute solution of sodium in liquid NH₃ is","Deep blue, conducting (ammoniated electrons)","Colourless","Bronze, diamagnetic","Red, insulating","Dilute = blue & paramagnetic; concentrated = bronze & diamagnetic."],
+['f',2,"Which sulphate is least soluble in water?","BaSO₄","BeSO₄","MgSO₄","CaSO₄","Hydration enthalpy falls faster than lattice enthalpy down group 2."],
+['f',2,"The most thermally stable carbonate among these is","BaCO₃","MgCO₃","BeCO₃","CaCO₃","Larger cation polarises CO₃²⁻ less."],
+['f',1,"Which hydroxide is amphoteric?","Be(OH)₂","Mg(OH)₂","Ca(OH)₂","Ba(OH)₂","Be shows a diagonal relationship with Al."],
+['f',2,"A diagonal relationship exists between","Be and Al","Li and Be","B and Al","Na and Mg","Li–Mg, Be–Al, B–Si (similar charge/size ratio)."],
+['f',1,"Which of these is a metalloid?","Germanium","Gallium","Tin","Lead","Metalloids: B, Si, Ge, As, Sb, Te."],
+['p',1,"Which oxide is amphoteric?","Al₂O₃","Na₂O","SO₃","CO","Amphoteric oxides: BeO, Al₂O₃, ZnO, SnO₂, PbO."],
+['p',1,"Which is a neutral oxide?","N₂O","N₂O₅","P₄O₁₀","Cl₂O₇","Neutral: CO, NO, N₂O, H₂O."],
+['p',2,"Which is the most acidic oxide?","Cl₂O₇","P₄O₁₀","SO₃","SiO₂","Acidic character increases across a period; Cl₂O₇ gives HClO₄."],
+['p',2,"Stability of Pb²⁺ over Pb⁴⁺ (and Tl⁺ over Tl³⁺) is due to","Inert pair effect","Lanthanoid contraction","Diagonal relationship","Screening effect","Poor shielding by d/f electrons keeps ns² tightly held."],
+['p',2,"Which pentahalide does NOT exist?","NCl₅","PCl₅","AsF₅","SbCl₅","N has no d-orbitals, so maximum covalency is 4."],
+['p',3,"Hybridisation of carbon in graphite and in diamond respectively is","sp² and sp³","sp³ and sp²","sp and sp²","sp² and sp","Graphite: layers, delocalised π electrons. Diamond: tetrahedral."],
+['p',3,"Which chloride has the highest covalent character (Fajans’ rules)?","LiCl","NaCl","KCl","CsCl","Small, highly polarising Li⁺ distorts the Cl⁻ cloud the most."],
+['p',2,"Noble gases have very high IE and positive electron-gain enthalpy because of","Stable, fully filled valence subshells","Large size","Low nuclear charge","Presence of d-orbitals","ns²np⁶ is extra stable (He: 1s²)."]
+];
+// ---- engine ----
+const QZ={mode:'mix',lv:0,len:0,tm:false,seen:new Set(),s:0,n:0,st:0,log:[],cur:null,tid:null};
+const QM=[['mix','🎲 Mix'],['k','🧠 Trick'],['t','📈 Trends'],['c','⚛ Config'],['i','🔩 d-block'],['f','📚 Facts'],['p','🧪 Concepts']],QL=[[0,'All levels'],[1,'NEET'],[2,'JEE Main'],[3,'JEE Adv']],QN=[[0,'Practice'],[10,'Test 10'],[20,'Test 20'],[30,'Test 30']],LB='ABCD';
+function qGen(){const m=QZ.mode,C=CQ.filter(x=>m=='mix'||x[0]==m),G=GEN.filter(x=>m=='mix'||x.m==m);if(C.length&&(!G.length||Math.random()<.45)){const x=qPk(C);return mk(x[2],x[3],[x[4],x[5],x[6]],x[7],TOP[x[0]],x[1])}return G.length?qPk(G).f():null}
+function qNext(){for(const strict of[1,0])for(let i=0;i<120;i++){const r=qGen();if(r&&!QZ.seen.has(r.q)&&(!strict||!QZ.lv||r.l==QZ.lv)){return r}}QZ.seen.clear();return qGen()}
+const qCtl=()=>`<div class="qrow">${QM.map(([k,n])=>`<button class="chip${QZ.mode==k?' on':''}" data-qm="${k}">${n}</button>`).join('')}</div><div class="qrow">${QL.map(([k,n])=>`<button class="chip${QZ.lv==k?' on':''}" data-ql="${k}">${n}</button>`).join('')}</div><div class="qrow">${QN.map(([k,n])=>`<button class="chip${QZ.len==k?' on':''}" data-qn="${k}">${n}</button>`).join('')}<button class="chip${QZ.tm?' on':''}" data-qt="1">⏱ 30s timer</button></div>`;
+function qView(){const q=QZ.cur;clearInterval(QZ.tid);
+$('qz').innerHTML=qCtl()+`<div class="sc"><span>Score: <b id="qs">${QZ.s}</b> / <b id="qn">${QZ.n}</b></span><span>🔥 Streak ${QZ.st}</span><span>${QZ.len?'Q '+(QZ.n+1)+' / '+QZ.len:'Practice ∞'}</span></div><div class="qmeta"><span class="bd l${q.l}">${QL[q.l][1]}</span><span class="bd">${q.t}</span><span class="bd" id="qtm"></span></div><div class="qq">${q.q}</div><div class="opts2">${q.o.map((x,i)=>`<button class="opt2" data-i="${i}"><b>${LB[i]}</b><span>${x}</span></button>`).join('')}</div><div id="fb"></div>`;
+if(QZ.tm){let t=30;const el=$('qtm');el.textContent='⏱ '+t+'s';QZ.tid=setInterval(()=>{t--;el.textContent='⏱ '+t+'s';if(t<=0){clearInterval(QZ.tid);qAns(-1)}},1000)}}
+function qAns(i){const q=QZ.cur;if(!q||q.done)return;q.done=1;clearInterval(QZ.tid);QZ.seen.add(q.q);QZ.n++;const ok=i==q.a;if(ok){QZ.s++;QZ.st++;beep(880)}else{QZ.st=0;beep(220)}
+QZ.log.push({q:q.q,o:q.o,a:q.a,p:i,ok,e:q.e,t:q.t});qStat(q.t,ok);
+$('qz').querySelectorAll('.opt2').forEach((b,j)=>{b.classList.toggle('ok',j==q.a);if(j==i&&!ok)b.classList.add('no');b.disabled=true});
+$('qs').textContent=QZ.s;$('qn').textContent=QZ.n;const fin=QZ.len&&QZ.n>=QZ.len;
+$('fb').innerHTML=`<div class="ex ${ok?'g':'r'}"><b>${ok?'✅ Sahi!':i<0?'⏰ Time up!':'❌ Galat.'}</b> Answer: <b>${LB[q.a]}</b><br>💡 ${q.e}</div><button class="nx">${fin?'Result dekho →':'Next →'}</button>`;$('fb').querySelector('.nx').onclick=qNextQ;$('fb').scrollIntoView({behavior:'smooth',block:'nearest'})}
+function qStat(t,ok){try{const k='codex-pt-quiz-stats',s=JSON.parse(LS.get(k,'{}'));s[t]=s[t]||[0,0];s[t][1]++;if(ok)s[t][0]++;LS.set(k,JSON.stringify(s))}catch(_){}}
+function qNextQ(){if(QZ.len&&QZ.n>=QZ.len)return qResult();QZ.cur=qNext();qView();scrollTo(0,0)}
+function qReset(){clearInterval(QZ.tid);QZ.s=QZ.n=QZ.st=0;QZ.log=[];QZ.cur=qNext();qView()}
+function qResult(){clearInterval(QZ.tid);const p=Math.round(QZ.s/QZ.n*100),k='codex-pt-quiz-best',B=JSON.parse(LS.get(k,'{}')),key=QZ.mode+'-'+QZ.len+'-'+QZ.lv,nb=!B[key]||p>B[key];if(nb){B[key]=p;LS.set(k,JSON.stringify(B))}
+const T={};QZ.log.forEach(r=>{T[r.t]=T[r.t]||[0,0];T[r.t][1]++;if(r.ok)T[r.t][0]++});const bad=QZ.log.filter(r=>!r.ok);
+const rem=p>=90?'🏆 Exam-ready! Topper level.':p>=70?'🔥 Bahut badhiya — thoda aur revision.':p>=50?'👍 Theek hai — wrong questions dobara padho.':'📖 Tricks tab dobara padho, phir try karo.';
+$('qz').innerHTML=`<div class="qres"><div class="big2">${QZ.s}<small> / ${QZ.n}</small></div><div class="qs">${p}% · ${rem}${nb?' · 🎉 New best!':' · Best: '+B[key]+'%'}</div>
+<div class="sub">Topic-wise</div>${Object.entries(T).map(([t,v])=>`<div class="tr"><span>${t}</span><span>${v[0]}/${v[1]}</span></div>`).join('')}
+${bad.length?`<div class="sub">Galat jawab · review (${bad.length})</div>${bad.map(r=>`<div class="rv"><div class="qq">${r.q}</div><div class="note">Your answer: ${r.p<0?'— (time up)':r.o[r.p]}</div><div class="note" style="color:#34c27a">Correct: <b>${r.o[r.a]}</b></div><div class="ex">💡 ${r.e}</div></div>`).join('')}`:'<div class="ex g">Ek bhi galat nahi! 💯</div>'}
+<div class="act" style="padding:14px 0 0"><button data-retry="1" class="on">🔁 Naya test</button><button data-prac="1">♾ Practice mode</button></div></div>`;scrollTo(0,0)}
+$('qz').onclick=ev=>{const t=ev.target.closest('button');if(!t)return;const d=t.dataset;
+if(d.qm){QZ.mode=d.qm;return qReset()}if(d.ql){QZ.lv=+d.ql;return qReset()}if(d.qn){QZ.len=+d.qn;return qReset()}if(d.qt){QZ.tm=!QZ.tm;return qReset()}
+if(d.retry)return qReset();if(d.prac){QZ.len=0;return qReset()}if(t.classList.contains('opt2'))qAns(+d.i)};
+addEventListener('keydown',ev=>{if(!$('vq').classList.contains('on')||ev.target.tagName=='INPUT'||!QZ.cur)return;const k=ev.key.toLowerCase(),i='abcd'.indexOf(k)>=0?'abcd'.indexOf(k):'1234'.indexOf(k);if(i>=0&&!QZ.cur.done)qAns(i);else if((k=='enter'||k=='n')&&QZ.cur.done&&$('fb').querySelector('.nx'))qNextQ()});
+function quiz(){if(!QZ.cur||QZ.cur.done){if(QZ.len&&QZ.n>=QZ.len&&QZ.cur&&QZ.cur.done)return qResult();return qNextQ()}qView()}
+// ================= EXAM TRICKS (added to Tricks tab) =================
+$('tk').insertAdjacentHTML('beforeend',`<div class="blk g"><div class="pill">🎯 NEET / JEE Exam Tricks</div>
+<div class="sub">Records · ek line me yaad karo</div>
+<div class="tr"><span>Highest IE₁ / Lowest IE₁</span><span>He / Cs (Fr radioactive)</span></div><div class="tr"><span>Highest electronegativity</span><span>F (3.98)</span></div><div class="tr"><span>Highest electron gain enthalpy</span><span>Cl (not F)</span></div><div class="tr"><span>Densest / Lightest metal</span><span>Os / Li</span></div><div class="tr"><span>Highest / Lowest mp (metal)</span><span>W / Hg</span></div><div class="tr"><span>Lowest bp element</span><span>He (4.2 K)</span></div><div class="tr"><span>Liquid at 25 °C</span><span>Hg (metal), Br₂ (non-metal)</span></div><div class="tr"><span>Most abundant in crust</span><span>O (element), Al (metal)</span></div><div class="tr"><span>No stable isotope, Z &lt; 83</span><span>Tc (43), Pm (61)</span></div>
+<div class="sub">Periodic length &amp; blocks</div><div class="sent"><b>Period lengths:</b> 2 · 8 · 8 · 18 · 18 · 32 · 32<br><b>Aufbau order:</b> 1s 2s 2p 3s 3p 4s 3d 4p 5s 4d 5p 6s 4f 5d 6p 7s 5f 6d 7p<br><b>Nodes:</b> radial = n − l − 1 · angular = l · total = n − 1</div>
+<div class="sub">IE anomalies — “Be &amp; N, Mg &amp; P extra stable”</div><div class="sent">Period 2: Li &lt; B &lt; Be &lt; C &lt; O &lt; N &lt; F &lt; Ne<br>Period 3: Na &lt; Al &lt; Mg &lt; Si &lt; S &lt; P &lt; Cl &lt; Ar</div>
+<div class="sub">Electron gain enthalpy &amp; bond energy</div><div class="sent">EA: Cl &gt; F &gt; Br &gt; I · S &gt; Se &gt; Te &gt; O<br>Bond energy: Cl₂ &gt; Br₂ &gt; F₂ &gt; I₂<br>Acid strength: HF &lt; HCl &lt; HBr &lt; HI · Boiling pt: HF &gt; HI &gt; HBr &gt; HCl</div>
+<div class="sub">Config exceptions · yaad rakho</div><div class="sent">Cr 3d⁵4s¹ · Cu 3d¹⁰4s¹ · Mo 4d⁵5s¹ · Ag 4d¹⁰5s¹ · Pd 4d¹⁰5s⁰ · Au 5d¹⁰6s¹ · Pt 5d⁹6s¹<br>Ion banate waqt pehle <b>ns</b> se e⁻ nikalo, phir (n−1)d se.</div>
+<div class="sub">Magnetism shortcut (weak field)</div><div class="sent">d¹ → d⁵ : unpaired = 1,2,3,4,5 · d⁶ → d¹⁰ : 4,3,2,1,0<br>μ = √(n(n+2)) BM : 1.73 · 2.83 · 3.87 · 4.90 · 5.92<br>d⁰ &amp; d¹⁰ ions (Sc³⁺, Ti⁴⁺, Zn²⁺, Cu⁺) → colourless &amp; diamagnetic</div>
+<div class="sub">Isoelectronic series (10 e⁻)</div><div class="sent">N³⁻ &gt; O²⁻ &gt; F⁻ &gt; Na⁺ &gt; Mg²⁺ &gt; Al³⁺ (size) — Z jitna zyada, size utna chhota.</div>
+<div class="sub">Oxides — left → right : basic → amphoteric → acidic</div><div class="sent"><b>Amphoteric:</b> BeO, Al₂O₃, ZnO, SnO₂, PbO · <b>Neutral:</b> CO, NO, N₂O, H₂O · <b>Most acidic:</b> Cl₂O₇</div>
+<div class="sub">Flame colours</div><div class="sent">Li crimson · Na golden yellow · K lilac · Rb red-violet · Cs blue · Ca brick red · Sr crimson · Ba apple green</div>
+<div class="sub">Diagonal pairs &amp; Mendeleev’s eka</div><div class="sent">Li–Mg · Be–Al · B–Si<br>Eka-B = Sc · Eka-Al = Ga · Eka-Si = Ge</div>
+<div class="sub">Latin symbols</div><div class="sent">Na Natrium · K Kalium · Fe Ferrum · Cu Cuprum · Ag Argentum · Au Aurum · Hg Hydrargyrum · Sn Stannum · Sb Stibium · Pb Plumbum · W Wolfram</div>
+<div class="note">Group names: 15 Pnictogens · 16 Chalcogens · 17 Halogens · 11 Coinage metals. Inert pair effect: Tl⁺ &amp; Pb²⁺ zyada stable.</div></div>`);
+
+// ================= THEMES / MODES (shared with main site keys) =================
+const LS={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:v}catch(_){return d}},set(k,v){try{localStorage.setItem(k,v)}catch(_){}}};
+const THC={light:"#f4f5f9",dark:"#06060f",sandalwood:"#1c130c","forest-emerald":"#06140f","ocean-deep":"#050e17","sakura-blossom":"#fff3f6","dracula-midnight":"#14121f","lavender-mist":"#f5f2fc","cyberpunk-neon":"#05020a"};
+function setTheme(t){const r=document.documentElement;let e=t;if(t==="system")e=matchMedia("(prefers-color-scheme: light)").matches?"light":"dark";r.dataset.theme=e;const m=document.querySelector('meta[name="theme-color"]');if(m)m.content=THC[e]||THC.dark;document.querySelectorAll(".theme-option").forEach(o=>o.classList.toggle("active",o.dataset.theme===t))}
+const modal=(id,on)=>$(id).classList.toggle("on",on);
+document.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>modal(b.dataset.close,false));
+document.querySelectorAll(".ovl").forEach(o=>o.addEventListener("click",ev=>{if(ev.target===o)o.classList.remove("on")}));
+$("th").onclick=()=>modal("themeModal",true);$("fxb").onclick=()=>modal("effectsModal",true);
+document.querySelectorAll(".theme-option").forEach(o=>o.onclick=()=>{LS.set("codex-studys-theme",o.dataset.theme);setTheme(o.dataset.theme);beep(660)});
+setTheme(LS.get("codex-studys-theme","system"));
+const ct=$("contrastToggle"),mt=$("motionToggle");
+function setCon(on){document.documentElement.dataset.contrast=on?"high":"normal";ct.classList.toggle("on",on);ct.setAttribute("aria-checked",on)}
+function setMot(on){document.documentElement.dataset.reducedMotion=on?"true":"false";mt.classList.toggle("on",on);mt.setAttribute("aria-checked",on);window.__codexFxApply&&window.__codexFxApply()}
+setCon(LS.get("codex-studys-contrast","false")==="true");setMot(LS.get("codex-studys-reduced-motion","false")==="true");
+ct.onclick=()=>{const on=ct.getAttribute("aria-checked")!=="true";LS.set("codex-studys-contrast",on);setCon(on)};
+mt.onclick=()=>{const on=mt.getAttribute("aria-checked")!=="true";LS.set("codex-studys-reduced-motion",on);setMot(on)};
+addEventListener("keydown",e=>{if(e.key==="Escape")document.querySelectorAll(".ovl.on").forEach(o=>o.classList.remove("on"))});
+// ================= ANIMATION EFFECTS (same engine as main site) =================
+const $$=s=>[...document.querySelectorAll(s)];
+function setupFxEngine() {
+  const ENABLED_KEY = "codex-studys-fx-enabled";
+  const EFFECT_KEY = "codex-studys-fx-effect";
+  const INTENSITY_KEY = "codex-studys-fx-intensity";
+  const SCALE = [0.55, 1, 1.85];
+
+  const enableToggle = document.querySelector("#fxEnableToggle");
+  const grid = document.querySelector("#effectsGrid");
+  const intensityInput = document.querySelector("#fxIntensity");
+  const fxBtn = document.querySelector("#fxBtn");
+  if (!grid) return;
+
+  let canvas = null, ctx = null, rafId = null, dpr = 1, running = false, last = 0;
+  let particles = [], bolts = [], flash = 0, burstTimer = 0, boltTimer = 0;
+  let effect = (function(){try{return localStorage.getItem(EFFECT_KEY)}catch(_){return null}})() || "rain";
+  let intensity = Number((function(){try{var v=localStorage.getItem(INTENSITY_KEY);return v==null?1:v}catch(_){return 1}})());
+  if (!Number.isInteger(intensity) || intensity < 0 || intensity > 2) intensity = 1;
+  let enabled = localStorage.getItem(ENABLED_KEY) === "true";
+
+  const reducedMotion = () =>
+    document.documentElement.getAttribute("data-reduced-motion") === "true" ||
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  function ensureCanvas() {
+    if (canvas) return;
+    canvas = document.createElement("canvas");
+    canvas.id = "fxCanvas";
+    canvas.setAttribute("aria-hidden", "true");
+    document.body.appendChild(canvas);
+    ctx = canvas.getContext("2d");
+    resizeCanvas();
+    window.addEventListener("resize", resizeCanvas);
+  }
+
+  function resizeCanvas() {
+    if (!canvas) return;
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.round(window.innerWidth * dpr);
+    canvas.height = Math.round(window.innerHeight * dpr);
+    canvas.style.width = window.innerWidth + "px";
+    canvas.style.height = window.innerHeight + "px";
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  function density(base) {
+    const w = window.innerWidth;
+    const dscale = w < 480 ? 0.5 : w < 900 ? 0.75 : 1;
+    return Math.max(6, Math.round(base * dscale * SCALE[intensity]));
+  }
+
+  function seed() {
+    const w = window.innerWidth, h = window.innerHeight;
+    particles = []; bolts = []; flash = 0; burstTimer = 0; boltTimer = 0;
+    if (effect === "rain" || effect === "storm") {
+      const n = density(effect === "storm" ? 100 : 75);
+      for (let i = 0; i < n; i++) particles.push({
+        x: Math.random() * w, y: Math.random() * h - h,
+        len: 14 + Math.random() * 16, speed: 7 + Math.random() * 7,
+        drift: effect === "storm" ? 2.6 : 0.7
+      });
+    } else if (effect === "snow") {
+      const n = density(70);
+      for (let i = 0; i < n; i++) particles.push({
+        x: Math.random() * w, y: Math.random() * h,
+        r: 1.5 + Math.random() * 2.6, speed: 0.6 + Math.random() * 1.3,
+        phase: Math.random() * Math.PI * 2, amp: 10 + Math.random() * 20
+      });
+    } else if (effect === "hail") {
+      const n = density(55);
+      for (let i = 0; i < n; i++) particles.push({
+        x: Math.random() * w, y: Math.random() * h - h,
+        r: 2 + Math.random() * 2, speed: 10 + Math.random() * 6, drift: 1.4
+      });
+    } else if (effect === "fireball") {
+      const n = density(40);
+      for (let i = 0; i < n; i++) particles.push({
+        x: Math.random() * w, y: h + Math.random() * 100,
+        r: 2 + Math.random() * 3.2, speed: 0.7 + Math.random() * 1.3,
+        drift: Math.random() * 1.2 - 0.6, flick: Math.random() * Math.PI * 2
+      });
+    }
+  }
+
+  function spawnBurst(w, h) {
+    const cx = 40 + Math.random() * (w - 80);
+    const cy = 60 + Math.random() * (h * 0.45);
+    const hue = Math.floor(Math.random() * 360);
+    const count = density(26);
+    for (let i = 0; i < count; i++) {
+      const a = (Math.PI * 2 * i) / count + Math.random() * 0.3;
+      const sp = 1.6 + Math.random() * 2.2;
+      particles.push({ x: cx, y: cy, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, life: 1, hue });
+    }
+  }
+
+  function spawnBolt(w, h) {
+    const points = [];
+    let x = 60 + Math.random() * Math.max(w - 120, 20), y = 0;
+    points.push({ x, y });
+    while (y < h * 0.7) {
+      y += 18 + Math.random() * 22;
+      x += (Math.random() - 0.5) * 40;
+      points.push({ x, y });
+    }
+    bolts.push({ points, life: 1 });
+    flash = 0.35;
+  }
+
+  function step(dt, w, h) {
+    ctx.clearRect(0, 0, w, h);
+    if (effect === "rain" || effect === "storm") {
+      ctx.strokeStyle = "rgba(160,200,255,.55)";
+      ctx.lineWidth = 1.3;
+      particles.forEach((p) => {
+        ctx.beginPath();
+        ctx.moveTo(p.x, p.y);
+        ctx.lineTo(p.x - p.drift * 3, p.y + p.len);
+        ctx.stroke();
+        p.y += p.speed * dt * 60; p.x += p.drift * dt * 60;
+        if (p.y > h) { p.y = -p.len; p.x = Math.random() * w; }
+      });
+      if (effect === "storm") {
+        boltTimer -= dt;
+        if (boltTimer <= 0) { spawnBolt(w, h); boltTimer = 2.5 + Math.random() * 4; }
+      }
+    } else if (effect === "snow") {
+      ctx.fillStyle = "rgba(255,255,255,.85)";
+      particles.forEach((p) => {
+        p.phase += dt;
+        const x = p.x + Math.sin(p.phase) * p.amp * 0.02;
+        ctx.beginPath(); ctx.arc(x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
+        p.y += p.speed * dt * 60;
+        if (p.y > h) { p.y = -4; p.x = Math.random() * w; }
+      });
+    } else if (effect === "hail") {
+      ctx.fillStyle = "rgba(220,235,255,.9)";
+      particles.forEach((p) => {
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
+        p.y += p.speed * dt * 60; p.x += p.drift * dt * 60;
+        if (p.y > h) { p.y = -6; p.x = Math.random() * w; }
+      });
+    } else if (effect === "fireball") {
+      particles.forEach((p) => {
+        p.flick += dt * 6;
+        const alpha = 0.5 + Math.sin(p.flick) * 0.3;
+        const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 3);
+        grad.addColorStop(0, `rgba(255,180,80,${alpha})`);
+        grad.addColorStop(1, "rgba(255,80,20,0)");
+        ctx.fillStyle = grad;
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r * 3, 0, Math.PI * 2); ctx.fill();
+        p.y -= p.speed * dt * 60; p.x += p.drift * dt * 30;
+        if (p.y < -10) { p.y = h + Math.random() * 40; p.x = Math.random() * w; }
+      });
+    } else if (effect === "firecracker") {
+      burstTimer -= dt;
+      if (burstTimer <= 0) { spawnBurst(w, h); burstTimer = 1.1 + Math.random() * (2.6 - intensity * 0.7); }
+      particles = particles.filter((p) => p.life > 0);
+      particles.forEach((p) => {
+        p.vy += dt * 1.6; p.x += p.vx * dt * 60; p.y += p.vy * dt * 60; p.life -= dt * 0.9;
+        ctx.fillStyle = `hsla(${p.hue},95%,65%,${Math.max(p.life, 0)})`;
+        ctx.beginPath(); ctx.arc(p.x, p.y, 2.2, 0, Math.PI * 2); ctx.fill();
+      });
+    } else if (effect === "lightning") {
+      boltTimer -= dt;
+      if (boltTimer <= 0) { spawnBolt(w, h); boltTimer = 2.6 + Math.random() * (5 - intensity); }
+    }
+
+    if (effect === "storm" || effect === "lightning") {
+      bolts = bolts.filter((b) => b.life > 0);
+      bolts.forEach((b) => {
+        ctx.strokeStyle = `rgba(220,235,255,${b.life})`;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        b.points.forEach((pt, i) => (i === 0 ? ctx.moveTo(pt.x, pt.y) : ctx.lineTo(pt.x, pt.y)));
+        ctx.stroke();
+        b.life -= dt * 1.8;
+      });
+      if (flash > 0) {
+        ctx.fillStyle = `rgba(210,225,255,${flash})`;
+        ctx.fillRect(0, 0, w, h);
+        flash -= dt * 0.9;
+      }
+    }
+  }
+
+  function loop(ts) {
+    if (!running) return;
+    const dt = Math.min((ts - last) / 1000 || 0, 0.05);
+    last = ts;
+    step(dt, window.innerWidth, window.innerHeight);
+    rafId = requestAnimationFrame(loop);
+  }
+
+  function start() {
+    if (running) return;
+    ensureCanvas();
+    seed();
+    running = true;
+    last = 0;
+    rafId = requestAnimationFrame(loop);
+  }
+  function stop() {
+    running = false;
+    if (rafId) cancelAnimationFrame(rafId);
+    rafId = null;
+    if (ctx && canvas) ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+  function apply() {
+    if (enabled && !reducedMotion() && !document.hidden) start(); else stop();
+  }
+
+  document.addEventListener("visibilitychange", () => { if (document.hidden) stop(); else apply(); });
+  window.matchMedia("(prefers-reduced-motion: reduce)").addEventListener?.("change", apply);
+  window.__codexFxApply = apply;
+
+  function markActive() {
+    document.querySelectorAll(".effect-option").forEach((btn) => btn.classList.toggle("active", btn.dataset.effect === effect));
+  }
+  enableToggle?.setAttribute("aria-checked", String(enabled));
+  if (intensityInput) intensityInput.value = String(intensity);
+  markActive();
+
+  enableToggle?.addEventListener("click", () => {
+    enabled = enableToggle.getAttribute("aria-checked") !== "true";
+    enableToggle.setAttribute("aria-checked", String(enabled));
+    localStorage.setItem(ENABLED_KEY, String(enabled));
+    apply();
+  });
+
+  grid.addEventListener("click", (event) => {
+    const btn = event.target.closest(".effect-option");
+    if (!btn) return;
+    effect = btn.dataset.effect;
+    localStorage.setItem(EFFECT_KEY, effect);
+    markActive();
+    if (running) { stop(); apply(); }
+  });
+
+  intensityInput?.addEventListener("input", () => {
+    intensity = Number(intensityInput.value);
+    localStorage.setItem(INTENSITY_KEY, String(intensity));
+    if (running) seed();
+  });
+
+  fxBtn?.addEventListener("click", () => openModal("effectsModal"));
+
+  if (enabled) apply();
+}
+// the engine's $()/$$() helpers use CSS selectors; page-level $ takes ids, so the engine was rewritten to querySelector
+setupFxEngine();
+// ================= FAVORITES / SHARE =================
+let cur=null;const FK="codex-studys-elem-favs";
+let FAV=new Set();try{FAV=new Set(JSON.parse(LS.get(FK,"[]")))}catch(_){}
+const saveFav=()=>LS.set(FK,JSON.stringify([...FAV]));
+function toast(m){const t=$("toast");t.textContent=m;t.classList.add("on");clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove("on"),1800)}
+function paintFav(){E.forEach(e=>e.el.classList.toggle("fv",FAV.has(e.s)));favChip.querySelector("span").textContent=FAV.size}
+const favChip=document.createElement("button");favChip.className="chip";favChip.style.setProperty("--c","#f6c85f");favChip.innerHTML='<i></i>⭐ Favorites (<span>0</span>)';
+favChip.onclick=()=>{st.fav=!st.fav;favChip.classList.toggle("on",st.fav);apply()};$("cats").prepend(favChip);
+function actBox(e){return`<div class="act"><button data-act="fav" class="${FAV.has(e.s)?"on":""}">${FAV.has(e.s)?"★ Favorited":"☆ Add to favorites"}</button><button data-act="share">🔗 Share link</button></div>`}
+$("info").addEventListener("click",ev=>{const b=ev.target.closest("[data-act]");if(!b||!cur)return;
+if(b.dataset.act==="fav"){FAV.has(cur.s)?FAV.delete(cur.s):FAV.add(cur.s);saveFav();paintFav();apply();b.classList.toggle("on",FAV.has(cur.s));b.textContent=FAV.has(cur.s)?"★ Favorited":"☆ Add to favorites";toast(FAV.has(cur.s)?cur.n+" favorite me add ⭐":"Favorite se hata diya")}
+else{const u=location.origin==="null"||location.protocol==="file:"?location.href.split("#")[0]+"#"+cur.s:location.origin+location.pathname+"#"+cur.s;
+if(navigator.share){navigator.share({title:cur.n+" – CodexStudys",url:u}).catch(()=>{})}else if(navigator.clipboard){navigator.clipboard.writeText(u).then(()=>toast("Link copied!"),()=>toast("Copy nahi hua"))}else toast("Share supported nahi")}});
+$("expF").onclick=()=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify([...FAV],null,1)],{type:"application/json"}));a.download="element-favorites.json";a.click();toast("Exported")};
+$("impF").onclick=()=>$("impFile").click();
+$("impFile").onchange=ev=>{const f=ev.target.files[0];if(!f)return;f.text().then(t=>{try{JSON.parse(t).forEach(x=>bySym[x]&&FAV.add(x));saveFav();paintFav();apply();toast("Imported ✅")}catch(_){toast("File sahi nahi hai")}})};
+$("clrF").onclick=()=>{FAV.clear();saveFav();paintFav();apply();toast("Favorites clear")};
+paintFav();
+if(location.hash.length>1){const e=bySym[decodeURIComponent(location.hash.slice(1))];if(e)setTimeout(()=>open(e),300)}
+apply();
+</script><script src="upgrade.js" defer></script><script src="ncert.js" defer></script><script src="exam-data.js" defer></script><script src="exam.js" defer></script>
+</body></html>
